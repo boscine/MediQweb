@@ -1,0 +1,82 @@
+<ui-mock-notice area="The Admin area" />
+
+<ui-filter-bar
+  label="Search patients"
+  placeholder="Name, email or contact number"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="statusOptions"
+    [selected]="statusFilter()"
+    label="Filter by status"
+    (selectionChange)="onStatusFilterChange($event)"
+  />
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns"
+    [rows]="patients()"
+    rowKey="id"
+    [caption]="activeCount() + ' of ' + totalCount() + ' patients active'"
+    [emptyMessage]="
+      query() || statusFilter() !== 'all'
+        ? 'No patients match your filters.'
+        : 'No patients have registered yet.'
+    "
+  >
+    <ng-template uiTableCell="name" let-row>
+      <span class="row-identity">
+        <ui-avatar [name]="row.name" size="xs" />
+        <span class="row-identity__name">{{ row.name }}</span>
+      </span>
+    </ng-template>
+
+    <ng-template uiTableCell="status" let-row>
+      <ui-status-badge [tone]="statusTone(row.status)" [dot]="true">
+        {{ row.status }}
+      </ui-status-badge>
+    </ng-template>
+
+    <ng-template uiTableCell="dateOfBirth" let-row>
+      {{ row.dateOfBirth | date: 'mediumDate' }}
+    </ng-template>
+
+    <ng-template uiTableCell="registeredOn" let-row>
+      {{ row.registeredOn | date: 'mediumDate' }}
+    </ng-template>
+
+    <ng-template uiTableCell="actions" let-row>
+      @if (row.status === 'active') {
+        <ui-button variant="ghost" size="sm" (click)="requestDisable(row)">Disable</ui-button>
+      } @else {
+        <ui-button variant="ghost" size="sm" (click)="enable(row)">Enable</ui-button>
+      }
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<p class="row-footnote">
+  Patient accounts are opened by a Secretary at the front desk, so they cannot be created from here.
+</p>
+
+<ui-modal
+  [open]="!!confirmDisableFor()"
+  size="sm"
+  title="Disable patient account"
+  (closed)="cancelDisable()"
+>
+  @if (confirmDisableFor(); as patient) {
+    <p class="row-confirm">
+      <strong>{{ patient.name }}</strong> will no longer be able to book appointments. The record
+      and appointment history are kept, and the account can be enabled again at any time.
+    </p>
+  }
+
+  <ng-container modalFooter>
+    <ui-button (click)="cancelDisable()">Cancel</ui-button>
+    <ui-button variant="danger" (click)="confirmDisable()">Disable account</ui-button>
+  </ng-container>
+</ui-modal>

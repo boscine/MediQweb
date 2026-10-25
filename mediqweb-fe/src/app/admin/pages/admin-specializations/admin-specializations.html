@@ -1,0 +1,72 @@
+<ui-mock-notice area="The Admin area" />
+
+<ui-filter-bar
+  label="Search specializations"
+  placeholder="Name of a specialty"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-button variant="primary" (click)="openCreate()">Add specialty</ui-button>
+</ui-filter-bar>
+
+<div class="grid">
+  @for (specialization of specializations(); track specialization.id) {
+    <ui-card>
+      <h3 class="card-title">{{ specialization.name }}</h3>
+      <p class="card-description">{{ specialization.description }}</p>
+      <p class="card-meta">
+        {{ specialization.doctorCount }}
+        {{ specialization.doctorCount === 1 ? 'doctor' : 'doctors' }}
+      </p>
+      <ng-container uiCardFooter>
+        <ui-button size="sm" (click)="openEdit(specialization)">Edit</ui-button>
+      </ng-container>
+    </ui-card>
+  } @empty {
+    <p class="empty">
+      @if (query()) {
+        No specialties match "{{ query() }}".
+      } @else {
+        No specialties yet. Add one so doctors can be assigned to it.
+      }
+    </p>
+  }
+</div>
+
+<p class="row-footnote">
+  Specialties cannot be removed here, because a doctor may already be assigned to one.
+</p>
+
+<ui-modal
+  [open]="editorOpen()"
+  size="sm"
+  [title]="isEditing() ? 'Edit specialty' : 'Add specialty'"
+  (closed)="closeEditor()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()" id="specialization-form">
+    <ui-form-field
+      label="Name"
+      controlId="specialization-name"
+      [required]="true"
+      [error]="nameError()"
+    >
+      <input id="specialization-name" type="text" formControlName="name" autocomplete="off" />
+    </ui-form-field>
+
+    <ui-form-field
+      label="Description"
+      controlId="specialization-description"
+      [required]="true"
+      [error]="descriptionError()"
+    >
+      <textarea id="specialization-description" formControlName="description" rows="3"></textarea>
+    </ui-form-field>
+  </form>
+
+  <ng-container modalFooter>
+    <ui-button (click)="closeEditor()">Cancel</ui-button>
+    <ui-button variant="primary" type="submit" formId="specialization-form">
+      {{ isEditing() ? 'Save changes' : 'Add specialty' }}
+    </ui-button>
+  </ng-container>
+</ui-modal>

@@ -1,0 +1,204 @@
+:host {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.ui-date-picker__trigger {
+  display: flex;
+  align-items: center;
+  // The global `button` baseline centres its content. This trigger reads as a
+  // text input with a leading icon, so it needs to start at the left edge —
+  // otherwise the icon and the date float in the middle of a full-width field
+  // and neither lines up with the label above or the inputs below. `text-align`
+  // alone does nothing here: these are flex items, not text.
+  justify-content: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  // `--space-3`, not the button baseline's `--space-4`, so the icon starts where
+  // a text input's text would. This control sits directly above the time inputs
+  // on the schedule form, and at the baseline padding its icon sat 4px further
+  // right than the text in the row underneath.
+  padding: 0 var(--space-3);
+  text-align: left;
+}
+
+.ui-date-picker__icon {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.ui-date-picker__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-date-picker__value.is-placeholder {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-body);
+}
+
+.ui-date-picker__panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  // Sized to the grid, not to the trigger. A calendar has a natural width, and
+  // inheriting a full-width trigger would leave a band of empty panel beside it.
+  width: max-content;
+  padding: var(--space-2);
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.ui-date-picker__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-1) var(--space-2);
+}
+
+.ui-date-picker__month {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.ui-date-picker__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  padding: 0;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.ui-date-picker__step:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+}
+
+.ui-date-picker__grid {
+  // Seven fixed columns rather than `width: 100%`, so the cells stay square at
+  // any size. A percentage width plus `aspect-ratio` on a table cell resolves
+  // against itself and the grid collapses to a handful of enormous squares.
+  --cell: 2.25rem;
+  width: calc(7 * var(--cell));
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ui-date-picker__grid th {
+  width: var(--cell);
+  padding-bottom: var(--space-1);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.ui-date-picker__cell {
+  // A square tap target. The browser's own picker uses small boxes and needs a
+  // precise click, which is the main reason a custom picker is worth having.
+  position: relative;
+  width: var(--cell);
+  height: var(--cell);
+  padding: 0;
+  font-size: var(--font-size-small);
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+  color: var(--color-text-primary);
+  background-color: transparent;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+// A day from the neighbouring month, drawn only so every week is a rectangle.
+// It cannot be chosen, so it must not look or behave as though it can.
+.ui-date-picker__cell.is-outside {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.ui-date-picker__cell.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ui-date-picker__cell:hover:not(.is-disabled):not(.is-outside) {
+  background-color: var(--color-surface-light);
+}
+
+// The keyboard cursor and hover share a tint, with the cursor winning because it
+// is the one the user is actually driving.
+.ui-date-picker__cell.is-focused {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ui-date-picker__cell.is-selected {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+}
+
+// Today, ringed rather than filled, so it does not read as already chosen.
+.ui-date-picker__cell.is-today:not(.is-selected) {
+  border-color: var(--color-primary);
+}
+
+// A date that already carries an exception. A dot rather than a colour, because a
+// fourth background would pile another meaning on top of selected/today/focused,
+// and the grid already reads as a status light without one.
+.ui-date-picker__cell.is-marked::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  transform: translateX(-50%);
+}
+
+.ui-date-picker__cell.is-selected.is-marked::after {
+  background-color: var(--color-text-inverse);
+}
+
+.ui-date-picker__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-1) 0;
+  margin-top: var(--space-1);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.ui-date-picker__link {
+  padding: 0;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.ui-date-picker__link:hover {
+  text-decoration: underline;
+}

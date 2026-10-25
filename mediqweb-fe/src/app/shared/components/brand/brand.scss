@@ -1,0 +1,43 @@
+:host {
+  display: inline-flex;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand__glyph {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.brand__tile {
+  fill: var(--color-primary);
+}
+
+.brand__cross {
+  stroke: var(--color-text-inverse);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.brand__word {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-page-title);
+  font-weight: var(--font-weight-page-title);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.brand__word-accent {
+  color: var(--color-primary);
+}
+
+.brand--compact .brand__glyph {
+  width: 28px;
+  height: 28px;
+}

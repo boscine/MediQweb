@@ -1,0 +1,16 @@
+<div class="bar">
+  <ui-form-field class="bar__search" [label]="label()" [controlId]="controlId">
+    <input
+      type="search"
+      [id]="controlId"
+      [value]="value()"
+      [placeholder]="placeholder()"
+      autocomplete="off"
+      (input)="onInput($event)"
+    />
+  </ui-form-field>
+
+  <div class="bar__filters">
+    <ng-content />
+  </div>
+</div>

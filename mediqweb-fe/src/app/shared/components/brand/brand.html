@@ -1,0 +1,10 @@
+<span class="brand" [class.brand--compact]="compact()">
+  <svg class="brand__glyph" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <rect class="brand__tile" x="0" y="0" width="32" height="32" rx="9" />
+    <path class="brand__cross" d="M16 9.5v13M9.5 16h13" />
+  </svg>
+
+  @if (!compact()) {
+    <span class="brand__word">Medi<span class="brand__word-accent">Q</span></span>
+  }
+</span>

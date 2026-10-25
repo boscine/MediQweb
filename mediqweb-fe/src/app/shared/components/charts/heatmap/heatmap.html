@@ -1,0 +1,59 @@
+<figure class="heatmap">
+  @if (caption(); as title) {
+    <figcaption class="heatmap__caption">{{ title }}</figcaption>
+  }
+
+  @if (hasData()) {
+    <!--
+      Scrolled rather than shrunk: below a certain width a cell can no longer
+      hold its number, and a grid of unreadable squares is worse than a grid the
+      reader can pan.
+    -->
+    <div class="heatmap__scroll">
+      <table class="heatmap__grid">
+        <caption class="visually-hidden">
+          {{
+            tableCaption()
+          }}
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" class="heatmap__corner">
+              <span class="visually-hidden">Weekday</span>
+            </th>
+            @for (slot of matrix().slots; track slot) {
+              <th scope="col" class="heatmap__slot">{{ slot }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.name) {
+            <tr>
+              <th scope="row" class="heatmap__day">{{ row.name }}</th>
+              @for (cell of row.cells; track cell.slotIndex) {
+                <td
+                  class="heatmap__cell"
+                  [attr.data-level]="level(cell.count)"
+                  [attr.title]="tooltip(cell)"
+                >
+                  {{ cell.count }}
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="heatmap__legend">
+      @for (key of legend; track key.level) {
+        <li class="heatmap__key">
+          <span class="heatmap__swatch" [attr.data-level]="key.level" aria-hidden="true"></span>
+          {{ key.label }}
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="heatmap__empty">{{ emptyMessage() }}</p>
+  }
+</figure>

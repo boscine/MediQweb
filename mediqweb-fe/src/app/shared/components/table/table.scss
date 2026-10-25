@@ -1,0 +1,136 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.ui-table__wrapper {
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-primary);
+}
+
+.ui-table__caption {
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.ui-table__th {
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-align: left;
+  white-space: nowrap;
+  background-color: var(--color-surface-light);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.ui-table--sticky .ui-table__th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.ui-table__th--center,
+.ui-table__td--center {
+  text-align: center;
+}
+
+.ui-table__th--end,
+.ui-table__td--end {
+  text-align: right;
+}
+
+.ui-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.ui-table__sort:hover {
+  color: var(--color-text-primary);
+}
+
+.ui-table__sort-icon {
+  color: var(--color-text-muted);
+}
+
+.ui-table__th.is-sorted {
+  color: var(--color-primary);
+}
+
+.ui-table__th.is-sorted .ui-table__sort-icon {
+  color: var(--color-primary);
+}
+
+.ui-table__td {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: var(--border-width) solid var(--color-border);
+  vertical-align: middle;
+}
+
+.ui-table--striped .ui-table__row:nth-child(even) {
+  background-color: var(--color-surface-light);
+}
+
+.ui-table__row {
+  transition: background-color var(--transition-fast);
+}
+
+.ui-table__row:hover {
+  background-color: var(--color-primary-light);
+}
+
+.ui-table__row:last-child .ui-table__td {
+  border-bottom: 0;
+}
+
+.ui-table__state-row td {
+  padding: 0;
+}
+
+.ui-table__empty {
+  padding: var(--space-10) var(--space-5);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+// Progressive disclosure on narrow viewports: columns flagged
+// `hideBelow` drop out rather than forcing a horizontal scroll.
+@media (max-width: 640px) {
+  .ui-table [data-hide-below='sm'] {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .ui-table [data-hide-below='md'] {
+    display: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .ui-table [data-hide-below='lg'] {
+    display: none;
+  }
+}

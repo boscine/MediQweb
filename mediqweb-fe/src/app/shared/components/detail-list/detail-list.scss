@@ -1,0 +1,23 @@
+// Two columns of label/value pairs, collapsing to one on narrow screens.
+//
+// The label sits above the value rather than beside it, so a long value — an
+// address, an email — never squeezes its own label into a column of its own.
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-5) var(--space-6);
+  margin: 0;
+}
+
+.details dt {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+.details dd {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-primary);
+  // Break long emails and addresses instead of letting them widen the card.
+  overflow-wrap: anywhere;
+}

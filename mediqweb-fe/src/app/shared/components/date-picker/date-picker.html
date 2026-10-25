@@ -1,0 +1,127 @@
+<button
+  type="button"
+  class="ui-date-picker__trigger"
+  [id]="triggerId() || null"
+  [disabled]="isDisabled()"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="opened()"
+  [attr.aria-controls]="dialogId"
+  [attr.aria-activedescendant]="activeDescendant()"
+  [attr.aria-label]="label() || null"
+  [attr.aria-describedby]="describedBy()"
+  [attr.aria-invalid]="invalid() || null"
+  (click)="toggle()"
+  (keydown)="onKeydown($event)"
+>
+  <svg class="ui-date-picker__icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <rect
+      x="3"
+      y="5"
+      width="18"
+      height="16"
+      rx="2"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+    <path
+      d="M3 10h18M8 3v4M16 3v4"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </svg>
+  <span class="ui-date-picker__value" [class.is-placeholder]="isPlaceholder()">{{
+    triggerText()
+  }}</span>
+</button>
+
+@if (opened()) {
+  <div
+    class="ui-date-picker__panel"
+    [id]="dialogId"
+    role="dialog"
+    aria-modal="false"
+    [attr.aria-label]="label() || 'Choose a date'"
+  >
+    <div class="ui-date-picker__nav">
+      <button
+        type="button"
+        class="ui-date-picker__step"
+        aria-label="Previous month"
+        (click)="shiftMonth(-1)"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path
+            d="M15 6l-6 6 6 6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      <span class="ui-date-picker__month" aria-live="polite">{{ monthLabel() }}</span>
+      <button
+        type="button"
+        class="ui-date-picker__step"
+        aria-label="Next month"
+        (click)="shiftMonth(1)"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path
+            d="M9 6l6 6-6 6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <table class="ui-date-picker__grid" [id]="gridId" role="grid">
+      <thead>
+        <tr>
+          @for (weekday of weekdayNames; track weekday) {
+            <th scope="col" abbr="weekday">{{ weekday }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of [0, 1, 2, 3, 4, 5]; track row) {
+          <tr>
+            @for (day of days().slice(row * 7, row * 7 + 7); track day.key) {
+              <td
+                [id]="dayId(day.key)"
+                role="gridcell"
+                class="ui-date-picker__cell"
+                [class.is-outside]="day.outside"
+                [class.is-disabled]="day.disabled"
+                [class.is-today]="isToday(day.key)"
+                [class.is-focused]="isFocused(day.key)"
+                [class.is-selected]="isSelected(day.key)"
+                [class.is-marked]="isMarked(day.key)"
+                [attr.aria-selected]="isSelected(day.key)"
+                [attr.aria-disabled]="isSelectable(day) ? null : 'true'"
+                [attr.aria-current]="isToday(day.key) ? 'date' : null"
+                (click)="select(day)"
+                (mouseenter)="hover(day)"
+              >
+                {{ day.day }}
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="ui-date-picker__foot">
+      <button type="button" class="ui-date-picker__link" (click)="clear()">Clear</button>
+      <button type="button" class="ui-date-picker__link" (click)="chooseToday()">Today</button>
+    </div>
+  </div>
+}

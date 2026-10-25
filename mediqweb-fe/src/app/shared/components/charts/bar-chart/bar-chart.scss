@@ -1,0 +1,43 @@
+// A grid column of its own, so the chart shrinks with the column rather than
+// insisting on the width of its canvas.
+:host {
+  display: block;
+  min-width: 0;
+}
+
+// The figure carries no browser-default margin; the card around it decides the
+// spacing.
+.chart {
+  margin: 0;
+}
+
+// Names what the bars are and over what period. Quiet: it qualifies the card's
+// heading rather than competing with it.
+.chart__caption {
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+// chart.js measures this box to size the canvas, and `maintainAspectRatio` is
+// off, so the height set on it here is the height the chart is drawn at. A
+// horizontal chart sets its own from the number of bars.
+.chart__plot {
+  position: relative;
+  width: 100%;
+}
+
+// Only a ceiling: chart.js sets the canvas inline once it has laid it out, and
+// this is what keeps the un-drawn fallback — a canvas at its default 300x150 —
+// from overflowing the box.
+.chart__plot canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.chart__empty {
+  margin: 0;
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+}

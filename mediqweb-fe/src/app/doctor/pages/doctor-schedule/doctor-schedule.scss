@@ -1,0 +1,326 @@
+// One row per weekday, each holding that day's sessions. The day name and a
+// plain-language summary sit on the left as a fixed column, so the eye can run
+// down the week reading "not working" and the session times without the inputs
+// moving under it.
+.days {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.day {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.day:last-child {
+  border-bottom: 0;
+}
+
+.day__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  // Wide enough for "Wednesday" and the summary beside it, and no wider: a day
+  // name that grew with its summary would push the inputs around as the text
+  // changed.
+  flex: 0 0 9.5rem;
+  padding-top: var(--space-1);
+}
+
+.day__name {
+  font-weight: var(--font-weight-medium);
+}
+
+.day__summary {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.day__sessions {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+// A session is a label and a matched pair of times. Stacking the label above
+// the inputs rather than beside them keeps the two sessions' Opens aligned with
+// each other down the column, which a side-by-side label would not.
+.session {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1 1 13rem;
+  min-width: 0;
+}
+
+.session__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.session__toggle input {
+  width: 1rem;
+  height: 1rem;
+  // The form field gives every control a `min-height` so text inputs are a
+  // comfortable tap target. On a checkbox that minimum wins over `height` and
+  // stretches the native control into a tall thin box, so it is cleared here.
+  min-height: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.session__hours {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.session__hours ui-form-field {
+  flex: 1 1 6rem;
+  min-width: 0;
+}
+
+// A closed day dims its row so the pattern of the week is readable at a glance,
+// and an unused session inside an open day is dimmed the same way — so "not
+// working" is visible without reading a single time.
+.day--off,
+.session--off {
+  color: var(--color-text-muted);
+}
+
+.day--off .day__name,
+.session--off .session__toggle {
+  font-weight: var(--font-weight-body);
+}
+
+// A day whose two sessions clash is called out as a whole, because the problem
+// belongs to the day rather than to either session — and either input on its own
+// would look perfectly reasonable.
+//
+// The tint is mixed rather than a token: there is no `--color-danger-subtle` in
+// the palette, and naming one here would mean the first thing using it defines
+// it, in the one place that needed it. Same mix `FormField` uses for its focus
+// ring, so the two agree on what "danger, quietly" looks like.
+.day--error {
+  background-color: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+}
+
+.form-error {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-danger);
+}
+
+// The "to" between an opening and a closing time. Shared by the weekly rows and
+// the dated form — both show a matched pair of time inputs, and it is the same
+// separator, so it carries the same name rather than one scoped to a `.day`.
+.hours-dash {
+  padding-top: var(--control-height-md);
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.published {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.lede {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+// The save-time confirmation that used to sit here is now a toast, so its
+// wording and its dismissal live with every other action's feedback rather than
+// being declared again on this page.
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.actions__summary {
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.actions__buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.footnote {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+// --- One-off dates
+
+// Two peer cards on one page, and nothing else in the app stacks them, so
+// nothing was separating them — they rendered flush, which reads as one card
+// with a seam down the middle rather than as two things.
+//
+// `--space-5` because that is already the gap after the mock notice above, so the
+// page ends up with one value between blocks instead of two. Keyed on the
+// adjacent sibling rather than "the second card" so it keeps working if a third
+// is added, and so no trailing margin is left under the last one.
+ui-card + ui-card {
+  margin-top: var(--space-5);
+}
+
+// The date picker spans the full width of the card, ending on the same right edge
+// as the sessions below it. It used to stop at 18rem, which left a band of empty
+// card to its right and made the form look like a field that had been dropped in
+// rather than one that was placed.
+.dated-form__grid {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.dated-form__grid ui-form-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// The dated entry's sessions use the same `.session` shape as the weekly rows,
+// so a split day looks and behaves identically in both places.
+.dated-form__sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+// The published exceptions, soonest first so the next one to arrive is at the
+// bottom of the list nearest the form that adds it.
+.dated-list {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.dated-list__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  // The same gap and padding as `.day` above. Two bordered lists of rows on one
+  // page that measure differently read as two different components.
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.dated-list__row:last-child {
+  border-bottom: 0;
+}
+
+// The short date is what is read. It is not decorated with the long form: the
+// `DatePipe` would parse a bare `YYYY-MM-DD` as UTC and then print it in local
+// time, so a doctor west of Greenwich would read the day before the one they
+// picked. `formatDate` builds the date locally and cannot disagree with itself.
+.dated-list__when {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+.dated-list__date {
+  font-weight: var(--font-weight-medium);
+}
+
+.dated-list__hours {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.dated-list__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.dated-empty {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-4);
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 767px) {
+  // The day name and summary stop being a column beside the sessions and become
+  // a heading above them, so a narrow screen gets the full width for the times
+  // instead of spending it on an empty right half.
+  .day {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .day__heading {
+    flex: 0 0 auto;
+    padding-top: 0;
+  }
+
+  .day__sessions,
+  .dated-form__sessions {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  // Reset both selectors: the wide-screen rules set a `flex-basis`, and once
+  // these flip to a column that basis would size *height* instead of width.
+  .session {
+    flex: 0 0 auto;
+  }
+
+  .session__hours {
+    width: 100%;
+  }
+
+  .session__hours ui-form-field {
+    flex: 1 1 0;
+  }
+
+  .dated-form__grid ui-form-field {
+    flex: 0 0 auto;
+  }
+
+  .dated-list__actions {
+    margin-left: 0;
+  }
+}

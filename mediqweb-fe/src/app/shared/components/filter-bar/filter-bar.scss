@@ -1,0 +1,27 @@
+// The search field carries a label above it and the filters do not, so the two
+// are aligned on their bottom edges rather than their tops -- which only lines
+// up if the controls themselves are the same height. Every dropdown projected
+// here must therefore stay at the default `md` control height, the same as the
+// input. `size="sm"` on a filter puts it 8px short and the bar looks broken,
+// which is what it did until this was fixed.
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.bar__search {
+  flex: 1;
+  min-width: 16rem;
+  max-width: 24rem;
+}
+
+.bar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+}

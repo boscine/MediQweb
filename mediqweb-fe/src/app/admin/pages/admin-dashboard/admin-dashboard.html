@@ -1,0 +1,121 @@
+<ui-mock-notice area="The Admin area" />
+
+<div class="stats">
+  <ui-stat-card label="Doctors" [value]="doctors()" tone="primary" hint="Active accounts">
+    <a statFooter routerLink="/admin/accounts/doctors">Manage doctors</a>
+  </ui-stat-card>
+
+  <ui-stat-card label="Secretaries" [value]="secretaries()" tone="info" hint="Active accounts">
+    <a statFooter routerLink="/admin/accounts/secretaries">Manage secretaries</a>
+  </ui-stat-card>
+
+  <ui-stat-card label="Patients" [value]="patients()" tone="success" hint="Active accounts">
+    <a statFooter routerLink="/admin/accounts/patients">Manage patients</a>
+  </ui-stat-card>
+
+  <ui-stat-card
+    label="Specializations"
+    [value]="specializations()"
+    tone="warning"
+    hint="Available clinics"
+  >
+    <a statFooter routerLink="/admin/specializations">Manage specialties</a>
+  </ui-stat-card>
+</div>
+
+<!--
+  Shared two-column dashboard layout rather than a split inside one card:
+  the activity list is one subject and the clinic's appointments are another,
+  and a card headed "Recent activity" cannot honestly carry a chart about
+  appointments. The list keeps the wide column; the chart sits in the side
+  column the Doctor and Secretary dashboards already use for context.
+-->
+<div class="dash">
+  <ui-card heading="Recent activity" [headingLevel]="3">
+    <ng-container uiCardHeaderActions>
+      <a class="see-all" routerLink="/admin/audit-logs">View all logs</a>
+    </ng-container>
+
+    <ul class="activity">
+      @for (entry of activity(); track entry.id) {
+        <li class="activity__item">
+          <!--
+            Severity is a dot, not a filled pill. Six tinted pills stacked down the
+            side of a dashboard read as banners and made the action -- secondary
+            information -- louder than the subject it was describing.
+          -->
+          <span
+            class="activity__dot"
+            [style.background-color]="severityToken(entry.severity)"
+            aria-hidden="true"
+          ></span>
+          <span class="activity__action">{{ entry.action }}</span>
+          <span class="activity__subject">{{ entry.target }}</span>
+          <span class="activity__actor">{{ entry.actor }}</span>
+          <time class="activity__when" [attr.datetime]="entry.at">
+            {{ entry.at | date: 'MMM d, h:mm a' }}
+          </time>
+        </li>
+      } @empty {
+        <li class="activity__empty">Nothing has happened yet.</li>
+      }
+    </ul>
+  </ui-card>
+
+  <ui-card heading="Appointments" [headingLevel]="3">
+    <!--
+      "All appointments", not "By status" alone. This chart counts the whole
+      fixture while the workload chart below it counts one reporting window, so
+      their Finished slices can legitimately differ -- today they happen to both
+      read 5. A reader who saw only "By status" would take the two as the same
+      scope and conclude one of them was wrong.
+    -->
+    <ui-pie-chart [slices]="lifecycleSlices()" caption="By status, all appointments" />
+  </ui-card>
+</div>
+
+<!--
+  The analytics band. Separate cards rather than one card with four plots: each
+  answers a different question, and a card is the dashboard's unit for one
+  question. The two charts that carry the most horizontal detail -- a fortnight
+  of daily labels, and a row of hour columns -- take the full width; the two
+  that compare categories take a column each.
+-->
+<div class="charts">
+  <ui-card heading="New patient registrations" [headingLevel]="3">
+    <ui-bar-chart
+      [bars]="registrations()"
+      caption="By month, every month on record"
+      unit="registration"
+      emptyMessage="No registrations on record."
+    />
+  </ui-card>
+
+  <ui-card heading="Doctor consultation workload" [headingLevel]="3">
+    <ui-bar-chart
+      [bars]="workload()"
+      orientation="horizontal"
+      color="var(--color-info)"
+      [caption]="'Completed consultations, ' + windowLabel"
+      unit="consultation"
+      emptyMessage="No completed consultations in this period."
+    />
+  </ui-card>
+
+  <ui-card class="charts__wide" heading="Daily appointment trends" [headingLevel]="3">
+    <ui-line-chart
+      [points]="trends()"
+      [caption]="'By day, ' + windowLabel"
+      unit="appointment"
+      emptyMessage="No appointments in this period."
+    />
+  </ui-card>
+
+  <ui-card class="charts__wide" heading="Busy periods" [headingLevel]="3">
+    <ui-heatmap
+      [matrix]="heatmap()"
+      [caption]="'By weekday and hour, ' + windowLabel"
+      emptyMessage="No appointments in this period."
+    />
+  </ui-card>
+</div>

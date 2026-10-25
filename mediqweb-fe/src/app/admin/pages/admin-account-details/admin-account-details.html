@@ -1,0 +1,99 @@
+<!--
+  Projected into the shell's title row, beside the "Account Details" heading.
+  Mirrors the Figma top bar: "Edit Account" (outline) and "Disable Account"
+  (filled danger) actions.
+-->
+<ng-container staffPageActions>
+  <div class="account-actions">
+    <ui-button variant="secondary" size="sm" (pressed)="onEditAccount()">Edit Account</ui-button>
+    <ui-button variant="danger" size="sm" (pressed)="onDisableAccount()">Disable Account</ui-button>
+  </div>
+</ng-container>
+
+<div class="account-page">
+  @if (loading()) {
+    <div class="account-loading">Loading account details&hellip;</div>
+  }
+
+  @if (!loading()) {
+    <div class="account-grid">
+      <!-- Profile summary card — 280px wide, per Figma -->
+      <aside class="account-profile">
+        <ui-card padding="md">
+          <div class="profile-header">
+            <ui-avatar
+              [name]="name()"
+              size="xl"
+              [initials]="'JM'"
+            />
+            <div class="profile-identity">
+              <h2 class="profile-name">{{ name() }}</h2>
+              <p class="profile-role">{{ role() }}</p>
+            </div>
+            <span class="status-pill">{{ status() }}</span>
+          </div>
+
+          <div class="profile-divider"></div>
+
+          <div class="contact-list">
+            @for (contact of contacts(); track contact.label) {
+              <div class="contact-row">
+                <span class="contact-label">{{ contact.label }}</span>
+                <span class="contact-value">{{ contact.value }}</span>
+              </div>
+            }
+          </div>
+        </ui-card>
+      </aside>
+
+      <!-- Details panels -->
+      <section class="account-details">
+        <ui-card heading="Account information" padding="md">
+          <div class="detail-row">
+            <span class="detail-label">Verified</span>
+            <span class="detail-value">Identity verified</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Member since</span>
+            <span class="detail-value">Oct 2025</span>
+          </div>
+        </ui-card>
+
+        <ui-card heading="Professional details" padding="md">
+          <div class="detail-row">
+            <span class="detail-label">Specialty</span>
+            <span class="detail-value">General Medicine</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">License number</span>
+            <span class="detail-value">PRC-123456</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Clinic</span>
+            <span class="detail-value">ACE Medical Center CDO</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Consultation fee</span>
+            <span class="detail-value">₱1,000.00</span>
+          </div>
+        </ui-card>
+
+        <ui-card heading="Access activity" padding="md">
+          @for (activity of activities(); track activity.text) {
+            <div class="activity-row">
+              <span class="activity-marker"></span>
+              <div class="activity-body">
+                <span class="activity-text">{{ activity.text }}</span>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+            </div>
+          }
+        </ui-card>
+      </section>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="account-error">{{ error() }}</div>
+  }
+</div>

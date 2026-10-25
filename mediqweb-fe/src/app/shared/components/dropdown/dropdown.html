@@ -1,0 +1,82 @@
+<button
+  type="button"
+  class="ui-dropdown__trigger"
+  [class.ui-dropdown__trigger--sm]="size() === 'sm'"
+  [disabled]="disabled()"
+  role="combobox"
+  aria-haspopup="listbox"
+  [attr.aria-expanded]="opened()"
+  [attr.aria-controls]="listboxId"
+  [attr.aria-activedescendant]="activeDescendant()"
+  [attr.aria-label]="label() || null"
+  (click)="toggle()"
+  (keydown)="onKeydown($event)"
+>
+  <ng-content select="[uiDropdownTrigger]">
+    <span class="ui-dropdown__value" [class.is-placeholder]="!selectedItem()">{{
+      triggerText()
+    }}</span>
+  </ng-content>
+  <svg class="ui-dropdown__caret" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <path
+      d="M6 9l6 6 6-6"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</button>
+
+@if (opened()) {
+  <div class="ui-dropdown__panel" [class.ui-dropdown__panel--end]="placement() === 'bottom-end'">
+    @if (searchable()) {
+      <div class="ui-dropdown__search">
+        <input
+          [id]="searchId"
+          type="text"
+          role="combobox"
+          autocomplete="off"
+          placeholder="Search"
+          aria-autocomplete="list"
+          [attr.aria-controls]="listboxId"
+          [attr.aria-activedescendant]="activeDescendant()"
+          [attr.aria-expanded]="true"
+          [value]="query()"
+          (input)="onQuery($event)"
+          (keydown)="onKeydown($event)"
+        />
+      </div>
+    }
+
+    <ul
+      class="ui-dropdown__list"
+      [id]="listboxId"
+      role="listbox"
+      [attr.aria-activedescendant]="activeDescendant()"
+      [attr.aria-label]="label() || null"
+    >
+      @for (item of visibleItems(); track item.id; let i = $index) {
+        <li
+          role="option"
+          [id]="optionId(item.id)"
+          class="ui-dropdown__option"
+          [class.is-active]="i === activeIndex()"
+          [class.is-selected]="item.id === selected()"
+          [attr.aria-selected]="item.id === selected()"
+          [attr.aria-disabled]="item.disabled || null"
+          (click)="select(item)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          <span class="ui-dropdown__option-label">{{ item.label }}</span>
+          @if (item.description) {
+            <span class="ui-dropdown__option-description">{{ item.description }}</span>
+          }
+        </li>
+      } @empty {
+        <li class="ui-dropdown__empty">{{ emptyMessage() }}</li>
+      }
+    </ul>
+  </div>
+}

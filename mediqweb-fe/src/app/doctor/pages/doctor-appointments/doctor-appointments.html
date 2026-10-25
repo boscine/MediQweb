@@ -1,0 +1,80 @@
+<ui-mock-notice area="The Doctor area" />
+
+<ui-filter-bar
+  label="Search appointments"
+  placeholder="Patient name or reason"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="statusOptions"
+    [selected]="statusFilter()"
+    label="Filter by status"
+    (selectionChange)="onStatusFilterChange($event)"
+  />
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns"
+    [rows]="appointments()"
+    rowKey="id"
+    [caption]="caption()"
+    [emptyMessage]="
+      query() || statusFilter() !== 'all'
+        ? 'No appointments match your filters.'
+        : 'No appointments have been booked yet.'
+    "
+  >
+    <ng-template uiTableCell="startsAt" let-row>
+      <span class="when">
+        <time [attr.datetime]="row.startsAt">{{ row.startsAt | date: 'MMM d, y' }}</time>
+        <span class="when__time">{{ row.startsAt | date: 'h:mm a' }}</span>
+      </span>
+    </ng-template>
+
+    <ng-template uiTableCell="patientId" let-row>
+      <a class="row-identity" [routerLink]="['/doctor/patients', row.patientId]">
+        <ui-avatar [name]="patientName(row)" size="xs" />
+        <span class="row-identity__name">{{ patientName(row) }}</span>
+      </a>
+    </ng-template>
+
+    <ng-template uiTableCell="durationMinutes" let-row>
+      {{ length(row) }}
+    </ng-template>
+
+    <ng-template uiTableCell="status" let-row>
+      <ui-appointment-status [status]="row.status" />
+    </ng-template>
+
+    <!--
+      Two actions, and only on an appointment the front desk has confirmed.
+
+      No Confirm and no Cancel: approving a booking means the patient said they were
+      coming, and calling one off is an administrative decision about a booking —
+      both are the Secretary's. What only the doctor can say is whether the patient
+      was seen, or was not there in the booked time.
+
+      A `booked` row therefore shows nothing at all. That is not a missing button;
+      there is no visit to report on until the desk has confirmed it.
+    -->
+    <ng-template uiTableCell="actions" let-row>
+      <div class="actions">
+        @if (canRecord(row)) {
+          <ui-button size="sm" (click)="complete(row)">Complete</ui-button>
+          <ui-button variant="ghost" size="sm" (click)="markNoShow(row)">No-show</ui-button>
+        }
+      </div>
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<p class="row-footnote">
+  A Secretary at the front desk confirms an appointment and calls it off; only then can you record
+  what happened — complete if the visit went ahead, no-show if the patient was not there in the
+  booked time. A visit you have recorded moves to
+  <a routerLink="/doctor/history">Visit History</a>, and an appointment the desk called off is kept
+  on the Secretary's record rather than yours.
+</p>

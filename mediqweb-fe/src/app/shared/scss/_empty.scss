@@ -1,0 +1,20 @@
+// ============================================================================
+// Empty-state copy
+// ----------------------------------------------------------------------------
+// Used wherever a list legitimately has nothing in it. Never a bare empty table:
+// every list in these areas has a caption that says why.
+//
+// Its own partial because it is the single rule needed by nearly every screen —
+// `@use`-ing the larger dashboard or listing partial for it alone would drag
+// half that partial's rules into the component's budget for the sake of three
+// declarations.
+//
+// `@use` this into a component stylesheet rather than adding it to the global
+// sheet. The rules are re-emitted into that one component's scoped stylesheet,
+// so they stay component-local while having a single source of truth.
+// ============================================================================
+
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+}

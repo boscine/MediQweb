@@ -1,0 +1,10 @@
+# mediqweb/mediqapp-api
+node_modules/
+dist/
+.env
+.env.local
+*.log
+npm-debug.log*
+.coverage/
+.idea/
+.vscode/

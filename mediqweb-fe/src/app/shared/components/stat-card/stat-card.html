@@ -1,0 +1,49 @@
+<ui-card padding="none" variant="elevated" class="stat">
+  <!--
+    The card body belongs to `ui-card`, so this wrapper is what gives the stat its
+    own padding and vertical rhythm. Styling `.stat` alone put the padding on the
+    `ui-card` host instead, which pushed the surface inward and left the content
+    flush against its border.
+  -->
+  <div class="stat__inner">
+    <div class="stat__top">
+      <p class="stat__label">{{ label() }}</p>
+      <span class="stat__icon" aria-hidden="true">
+        <ng-content select="[statIcon]" />
+      </span>
+    </div>
+
+    <p class="stat__value">{{ value() }}</p>
+
+    @if (trend() || hint()) {
+      <p class="stat__meta">
+        @if (trend(); as t) {
+          <span
+            class="stat__trend"
+            [class.stat__trend--up]="t === 'up'"
+            [class.stat__trend--down]="t === 'down'"
+            [class.stat__trend--accent]="highlightTrend()"
+          >
+            <span aria-hidden="true">{{ trendGlyph() }}</span>
+            <span class="visually-hidden">{{ trendText() }}</span>
+            {{ trendLabel() }}
+          </span>
+        }
+        @if (hint()) {
+          <span class="stat__hint">{{ hint() }}</span>
+        }
+      </p>
+    }
+
+    <!--
+      Optional action, e.g. a link through to the list a card summarises. It
+      follows the hint rather than being pinned to the bottom of the card: the
+      grid already stretches every card in a row to the same height, and pinning
+      it would need `ui-card`'s body to be a flex column, which is a change to
+      every card in the app for the sake of this one.
+    -->
+    <div class="stat__footer">
+      <ng-content select="[statFooter]" />
+    </div>
+  </div>
+</ui-card>

@@ -1,0 +1,174 @@
+// ============================================================================
+// MediQ Design Tokens
+// ----------------------------------------------------------------------------
+// Single source of truth for the MediQ visual foundation.
+//
+// Components MUST consume these via `var(--token)`. Do not hardcode colours,
+// spacing, radii or shadows inside a component stylesheet — add a token here
+// instead. This keeps the design system easy to extend and consistent.
+// ============================================================================
+
+:root {
+  // --------------------------------------------------------------------------
+  // Brand
+  // Green is the MediQ brand colour. Use it for branding, active navigation,
+  // primary actions and positive states — not for whole surfaces.
+  // --------------------------------------------------------------------------
+  --color-primary: #1a7a33;
+  --color-primary-dark: #146229;
+  --color-primary-light: #eaf5ed;
+  --color-primary-action: #008000;
+
+  // --------------------------------------------------------------------------
+  // Semantic colours
+  // Use sparingly. Green stays primary.
+  // --------------------------------------------------------------------------
+  --color-success: #1a7a33;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+
+  // --------------------------------------------------------------------------
+  // Heatmap intensity ramp
+  // One hue in three steps, so a darker cell reads as "more of the same" rather
+  // than as a different kind of thing. The steps are the brand green blended
+  // over white, which is why the lightest sits so close to
+  // `--color-primary-light`. Text on `low` and `medium` is dark, on `high` is
+  // `--color-text-inverse`; all three pairs clear 4.5:1.
+  // --------------------------------------------------------------------------
+  --color-heat-low: #c6decc;
+  --color-heat-medium: #81b68f;
+  --color-heat-high: #1a7a33;
+
+  // --------------------------------------------------------------------------
+  // Backgrounds
+  // --------------------------------------------------------------------------
+  --color-background: #f5f7f6;
+  --color-surface: #ffffff;
+  --color-surface-light: #f9fafb;
+
+  // --------------------------------------------------------------------------
+  // Text
+  // --------------------------------------------------------------------------
+  --color-text-primary: #1e1e1e;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+
+  // Text placed on top of a saturated fill (primary buttons, dark headers).
+  --color-text-inverse: #ffffff;
+
+  // --------------------------------------------------------------------------
+  // Borders
+  // --------------------------------------------------------------------------
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  // Focus ring — shared by inputs, buttons and any focusable control.
+  --focus-ring-width: 3px;
+  --focus-ring-color: var(--color-primary-light);
+
+  // --------------------------------------------------------------------------
+  // Typography
+  // --------------------------------------------------------------------------
+  --font-family-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  // Page title — 24 / 28 / 700
+  --font-size-page-title: 24px;
+  --line-height-page-title: 28px;
+  --font-weight-page-title: 700;
+
+  // Dashboard metric — 30 / 34 / 700. The headline number on a stat card. Set
+  // above the page title because a row of these is read at a glance, where an
+  // h1 is read as part of the page.
+  --font-size-metric: 30px;
+  --line-height-metric: 34px;
+  --font-weight-metric: 700;
+
+  // Section title — 16 / 20 / 600
+  --font-size-section-title: 16px;
+  --line-height-section-title: 20px;
+  --font-weight-section-title: 600;
+
+  // Body — 14 / 20 / 400
+  --font-size-body: 14px;
+  --line-height-body: 20px;
+  --font-weight-body: 400;
+
+  // Body emphasis (labels, table headers)
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  // Secondary / caption text — 12 / 16 / 400
+  --font-size-small: 12px;
+  --line-height-small: 16px;
+  --font-weight-small: 400;
+
+  // Button text
+  --font-size-button: 14px;
+  --line-height-button: 20px;
+  --font-weight-button: 600;
+
+  // Navigation text
+  --font-size-nav: 14px;
+  --line-height-nav: 20px;
+  --font-weight-nav: 500;
+
+  // --------------------------------------------------------------------------
+  // Border radius
+  // 6–8px buttons and inputs · 10–12px cards · 12–16px larger panels
+  // --------------------------------------------------------------------------
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  // Only for status badges and other genuinely pill-shaped elements.
+  --radius-full: 9999px;
+
+  // --------------------------------------------------------------------------
+  // Shadows
+  // Subtle elevation only. Cards should rely primarily on a 1px border.
+  // --------------------------------------------------------------------------
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  // --------------------------------------------------------------------------
+  // Spacing scale
+  // Use these instead of arbitrary values.
+  // --------------------------------------------------------------------------
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  // --------------------------------------------------------------------------
+  // Control sizing
+  // Shared baseline for buttons, inputs, selects and textareas.
+  // --------------------------------------------------------------------------
+  --control-height-sm: 32px;
+  --control-height-md: 40px;
+  --control-height-lg: 48px;
+
+  // --------------------------------------------------------------------------
+  // Layout
+  // --------------------------------------------------------------------------
+  --sidebar-width: 248px;
+  --header-height: 64px;
+  --content-max-width: 1280px;
+
+  // --------------------------------------------------------------------------
+  // Motion
+  // --------------------------------------------------------------------------
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+}

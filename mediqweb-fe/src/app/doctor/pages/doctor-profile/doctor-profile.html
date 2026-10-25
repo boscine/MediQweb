@@ -1,0 +1,53 @@
+<ui-mock-notice area="The Doctor area" />
+
+<div class="profile">
+  <ui-detail-list heading="Practice details">
+    <div>
+      <dt>Specialization</dt>
+      <dd>{{ profile().specialization }}</dd>
+    </div>
+    <div>
+      <dt>License number</dt>
+      <dd>{{ profile().licenseNumber }}</dd>
+    </div>
+    <div>
+      <dt>Joined MediQ</dt>
+      <dd>{{ profile().joinedOn | date: 'longDate' }}</dd>
+    </div>
+    <div>
+      <dt>Patients</dt>
+      <dd>{{ patientCount() }} with an appointment</dd>
+    </div>
+  </ui-detail-list>
+
+  <ui-card heading="Your details" [headingLevel]="3" padding="lg">
+    <p class="lede">
+      These three fields are yours to keep current, and they are how the clinic reaches you. Your
+      specialization and license number are set by an administrator, so they are read-only here.
+    </p>
+
+    <form class="form" [formGroup]="form" (ngSubmit)="save()">
+      <ui-form-field label="Full name" controlId="profile-name" [error]="nameError()">
+        <input id="profile-name" type="text" formControlName="name" autocomplete="name" />
+      </ui-form-field>
+
+      <ui-form-field label="Email address" controlId="profile-email" [error]="emailError()">
+        <input id="profile-email" type="email" formControlName="email" autocomplete="email" />
+      </ui-form-field>
+
+      <ui-form-field
+        label="Short introduction"
+        controlId="profile-bio"
+        hint="Shown to patients when they book. 280 characters or fewer."
+        [error]="bioError()"
+      >
+        <textarea id="profile-bio" rows="4" formControlName="bio"></textarea>
+      </ui-form-field>
+
+      <div class="form__actions">
+        <ui-button variant="ghost" type="button" (click)="resetForm()">Discard changes</ui-button>
+        <ui-button type="submit">Save details</ui-button>
+      </div>
+    </form>
+  </ui-card>
+</div>

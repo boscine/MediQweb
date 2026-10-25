@@ -1,0 +1,114 @@
+<a class="shell__skip" [href]="'#' + mainId">Skip to main content</a>
+
+<div class="shell">
+  <header class="shell__header">
+    <div class="shell__start">
+      <button
+        type="button"
+        class="shell__menu"
+        aria-label="Open navigation"
+        [attr.aria-expanded]="navOpen()"
+        (click)="navOpen.set(true)"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+
+      <a class="shell__brand" [routerLink]="brandLink()">
+        <ui-brand />
+      </a>
+    </div>
+
+    <div class="shell__end">
+      <!--
+        Static identity, not a menu. There is no profile page behind it yet, and
+        a control that opens nothing is worse than no control: it looks
+        actionable, takes a tab stop, and announces a button to a screen reader
+        that then does nothing. The Profile page is reached from the sidebar.
+      -->
+      <div class="shell__profile">
+        <ui-avatar [name]="user().name" [src]="user().avatarUrl ?? null" size="sm" />
+        <span class="shell__profile-text">
+          <span class="shell__profile-name">{{ user().name }}</span>
+          <span class="shell__profile-role">{{ user().role }}</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell__body">
+    <aside class="shell__sidebar">
+      <app-staff-nav
+        [nav]="nav()"
+        [activeId]="activeItemId()"
+        [showLogout]="showLogout()"
+        (itemSelected)="onNavSelected($event)"
+        (logout)="requestLogout()"
+      />
+    </aside>
+
+    <main class="shell__main" [id]="mainId">
+      @if (breadcrumbs().length) {
+        <nav class="shell__crumbs" aria-label="Breadcrumb">
+          <ol>
+            @for (crumb of breadcrumbs(); track $index; let last = $last) {
+              <li class="shell__crumb">
+                @if (crumb.route && !last) {
+                  <a [routerLink]="crumb.route">{{ crumb.label }}</a>
+                } @else {
+                  <span [attr.aria-current]="last ? 'page' : null">{{ crumb.label }}</span>
+                }
+              </li>
+            }
+          </ol>
+        </nav>
+      }
+
+      <div class="shell__title-row" [class.shell__title-row--untitled]="!hasTitle()">
+        @if (pageTitle(); as title) {
+          <h1 class="shell__title">{{ title }}</h1>
+        }
+        <div class="shell__actions">
+          <ng-content select="[staffPageActions]" />
+        </div>
+      </div>
+
+      <ng-content />
+    </main>
+  </div>
+</div>
+
+<ui-modal [open]="navOpen()" placement="left" title="Menu" (closed)="closeNav()">
+  <app-staff-nav
+    [nav]="nav()"
+    [activeId]="activeItemId()"
+    [showLogout]="showLogout()"
+    (itemSelected)="onNavSelected($event)"
+    (logout)="requestLogout()"
+  />
+</ui-modal>
+
+<!--
+  Signing out is confirmed rather than done on one click. The layout still only
+  emits `logout`; clearing the session and routing to sign-in stay with the
+  shell, so this stays a question and not an answer.
+-->
+<ui-modal [open]="logoutConfirmOpen()" size="sm" title="Log out" (closed)="cancelLogout()">
+  <p>Are you sure you want to log out? You will need to sign in again to reach your workspace.</p>
+
+  <ng-container modalFooter>
+    <ui-button (click)="cancelLogout()">Cancel</ui-button>
+    <ui-button variant="danger" (click)="confirmLogout()">Log out</ui-button>
+  </ng-container>
+</ui-modal>

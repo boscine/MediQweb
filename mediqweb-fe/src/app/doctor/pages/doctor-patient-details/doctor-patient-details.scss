@@ -1,0 +1,5 @@
+// Both of these live in the shared partials: the identity banner, missing state
+// and footnote are the same on every record page, and the Doctor area already
+// had a copy.
+@use '../../../shared/scss/actions';
+@use '../../../shared/scss/record';

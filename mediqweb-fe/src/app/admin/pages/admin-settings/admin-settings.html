@@ -1,0 +1,82 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="sections">
+    <ui-card heading="Clinic details" [headingLevel]="3">
+      <p class="section-hint">Shown on appointment confirmations and patient messages.</p>
+
+      <!--
+        One two-column grid, rather than two full-width fields above a paired row.
+        Three widths in one card read as an accident, and the contact pair looked
+        bolted on.
+      -->
+      <div class="fields fields--pair">
+        <ui-form-field
+          label="Clinic name"
+          controlId="clinic-name"
+          [required]="true"
+          [error]="errorFor('clinicName')"
+        >
+          <input id="clinic-name" type="text" formControlName="clinicName" autocomplete="off" />
+        </ui-form-field>
+
+        <ui-form-field
+          label="Address"
+          controlId="clinic-address"
+          [required]="true"
+          [error]="errorFor('address')"
+        >
+          <input id="clinic-address" type="text" formControlName="address" autocomplete="off" />
+        </ui-form-field>
+
+        <ui-form-field
+          label="Contact email"
+          controlId="clinic-email"
+          [required]="true"
+          [error]="errorFor('contactEmail')"
+        >
+          <input id="clinic-email" type="email" formControlName="contactEmail" autocomplete="off" />
+        </ui-form-field>
+
+        <ui-form-field
+          label="Contact number"
+          controlId="clinic-phone"
+          [required]="true"
+          [error]="errorFor('contactNumber')"
+        >
+          <input id="clinic-phone" type="tel" formControlName="contactNumber" autocomplete="off" />
+        </ui-form-field>
+      </div>
+    </ui-card>
+
+    <ui-card heading="Security and records" [headingLevel]="3">
+      <p class="section-hint">Applies to every staff member. Both need a server to enforce them.</p>
+
+      <div class="fields">
+        <ui-form-field label="Sign out idle staff after" controlId="setting-timeout">
+          <ui-dropdown
+            id="setting-timeout"
+            [items]="sessionTimeouts"
+            [selected]="selectedOf('sessionTimeout')"
+            (selectionChange)="pick('sessionTimeout', $event)"
+          />
+        </ui-form-field>
+
+        <ui-form-field
+          label="Keep audit logs for"
+          controlId="setting-retention"
+          hint="How long account and record changes stay searchable."
+        >
+          <ui-dropdown
+            id="setting-retention"
+            [items]="retentionPeriods"
+            [selected]="selectedOf('retentionPeriod')"
+            (selectionChange)="pick('retentionPeriod', $event)"
+          />
+        </ui-form-field>
+      </div>
+    </ui-card>
+  </div>
+
+  <div class="actions">
+    <ui-button type="submit" variant="primary">Save changes</ui-button>
+  </div>
+</form>

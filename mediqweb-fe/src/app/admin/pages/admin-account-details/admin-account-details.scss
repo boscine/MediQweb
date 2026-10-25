@@ -1,0 +1,214 @@
+// Account details page styles — follows the Figma "MediQ account details" screen.
+//
+// Colours and dimensions stay close to the design tokens in
+// `src/styles/_variables.scss`; only page-specific layout values (280px profile
+// card, 72px avatar, 28px activity markers) are written out directly.
+
+.account-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6); // 24px gap per Figma
+}
+
+.account-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.account-error {
+  padding: var(--space-4);
+  background-color: #fdf3f3;
+  border: var(--border-width) solid #d1d5db;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-small);
+  color: var(--color-danger);
+}
+
+// Two-column layout on desktop: 280px profile card + details panels.
+.account-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 767px) {
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Profile summary card
+// ---------------------------------------------------------------------------
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.profile-identity {
+  min-width: 0;
+}
+
+.profile-name {
+  margin: 0 0 var(--space-1);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.profile-role {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  height: 20px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-light);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.profile-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--space-4) 0;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.contact-label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.contact-value {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  min-width: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Details panels
+// ---------------------------------------------------------------------------
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.detail-value {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: right;
+  min-width: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Access activity
+// ---------------------------------------------------------------------------
+
+.activity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.activity-row:last-child {
+  margin-bottom: 0;
+}
+
+.activity-marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.activity-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.activity-text {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.activity-time {
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+// ---------------------------------------------------------------------------
+// Title row actions (Edit Account / Disable Account)
+// ---------------------------------------------------------------------------
+
+.account-actions {
+  display: flex;
+  gap: var(--space-2);
+}

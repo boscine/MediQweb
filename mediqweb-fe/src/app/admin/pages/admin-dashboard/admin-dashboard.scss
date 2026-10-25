@@ -1,0 +1,122 @@
+// The stat card row, the "see all" link and the `.dash` / `.charts` grids are
+// shared with the Doctor and Secretary dashboards, so they come from one source
+// rather than being copied here.
+@use '../../../shared/scss/dashboard';
+
+// The shared row starts its columns at the top, which is right where a column
+// holds a stack of cards of different heights and a ragged bottom edge reads as
+// nothing in particular. Here both columns are a single card, so they stretch
+// to the taller one instead: the activity list and the chart then end on the
+// same line, and the row reads as one band rather than two loose blocks.
+.dash {
+  align-items: stretch;
+}
+
+.activity {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// The activity feed. Deliberately not a grid of fixed columns: with the pills
+// gone there is no box edge to line anything up against, and forcing a column
+// track for the action only reintroduced the gap that the stretch was meant to
+// close. Instead the row flows and the metadata is pushed to the right edge,
+// which is the one edge worth pinning — a timestamp that wanders is unreadable.
+.activity__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+// The first and last rows give up their own padding and sit against the card's,
+// which puts the divider 21px above the first row instead of 33px -- the 12px
+// here sat on top of the card body's 20px and made the list look detached from
+// its own header. It also makes the space above the list match the space below,
+// which the last-child rule was already giving.
+.activity__item:first-child {
+  padding-top: 0;
+}
+
+.activity__item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+// 6px, aligned to the text rather than floated, so it reads as a bullet on the
+// action instead of a separate column of its own.
+.activity__dot {
+  flex-shrink: 0;
+  align-self: center;
+  width: 6px;
+  height: 6px;
+  margin-top: 1px;
+  border-radius: var(--radius-full);
+}
+
+// Secondary information, and sized like it. This is what used to be inside a
+// pill at the same 12px, so only the box around it has gone.
+.activity__action {
+  flex-shrink: 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+// The subject is the content of the row, so it is the one thing at body size and
+// above body weight. It used to sit to the right of a tinted pill at the same
+// weight, which is why the list read as a stack of labels.
+.activity__subject {
+  min-width: 0;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Takes the slack, so the actor and timestamp sit against the right edge however
+// long the action and subject are.
+.activity__actor {
+  margin-left: auto;
+  padding-left: var(--space-3);
+}
+
+.activity__actor,
+.activity__when {
+  flex-shrink: 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+.activity__when {
+  min-width: 9rem;
+  text-align: end;
+}
+
+.activity__empty {
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+}
+
+// The metadata folds under the entry rather than competing with it for width.
+@media (max-width: 639px) {
+  .activity__item {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+  }
+
+  .activity__subject {
+    flex-basis: 100%;
+  }
+
+  .activity__actor {
+    margin-left: 0;
+    padding-left: 0;
+  }
+}

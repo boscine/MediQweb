@@ -1,0 +1,17 @@
+<section class="samples" [attr.aria-labelledby]="headingId">
+  <h2 class="samples__heading" [id]="headingId">Sample accounts</h2>
+  <p class="samples__note">
+    No API is connected, so sign-in is checked against these. Every one of them is scaffolding and
+    disappears when real authentication lands.
+  </p>
+  <ul class="samples__list">
+    @for (account of accounts(); track account.identifier) {
+      <li class="samples__item">
+        <code class="samples__id">{{ account.identifier }}</code>
+        <span class="samples__sep" aria-hidden="true">/</span>
+        <code class="samples__secret">{{ account.password }}</code>
+        <span class="samples__role">{{ account.role }}</span>
+      </li>
+    }
+  </ul>
+</section>

@@ -1,0 +1,23 @@
+<button
+  [class]="'ui-button ui-button--' + variant() + ' ui-button--' + size()"
+  [class.ui-button--block]="fullWidth()"
+  [class.ui-button--icon-only]="iconOnly()"
+  [type]="type()"
+  [attr.form]="formId()"
+  [disabled]="disabled() || loading()"
+  [attr.aria-busy]="loading()"
+  [attr.aria-label]="ariaLabel()"
+  (click)="onClick($event)"
+>
+  @if (loading()) {
+    <ui-spinner size="sm" [announce]="false" />
+  } @else {
+    <ng-content select="[uiButtonIconStart]" />
+  }
+  <span class="ui-button__label" [class.visually-hidden]="iconOnly()">
+    <ng-content />
+  </span>
+  @if (!loading()) {
+    <ng-content select="[uiButtonIconEnd]" />
+  }
+</button>

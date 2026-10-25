@@ -1,0 +1,182 @@
+// ---------------------------------------------------------------------------
+// The stack
+// ---------------------------------------------------------------------------
+// Fixed to the top centre of the *viewport*, so it does not travel with the page
+// and stays put while the reader scrolls the list underneath it.
+//
+// `left: 50%` plus a translate rather than `inset-inline: 0` with `margin-inline:
+// auto`, because a fixed element with an auto margin has no containing block to
+// centre inside when the viewport is the containing block.
+//
+// The width is capped against the viewport so a long message wraps instead of
+// pushing the document sideways — the one thing an overlay must never do.
+.toasts {
+  position: fixed;
+  z-index: 50;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(28rem, calc(100vw - var(--space-8)));
+  // The container spans the full column height, so it must not swallow clicks
+  // aimed at the page behind it. Each toast opts back in below.
+  pointer-events: none;
+}
+
+// ---------------------------------------------------------------------------
+// One notification
+// ---------------------------------------------------------------------------
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  // Popped from the tone token rather than a second set of tints, so a toast and
+  // the badge of the same meaning cannot drift apart.
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+  // A short slide, not a long one: this is confirmation of something already done,
+  // and motion that outlasts the reading of it is just a delay.
+  //
+  // Reduced motion is honoured by the global reset in `styles.scss`, which clamps
+  // every animation duration to 0.01ms with `!important` — so no rule of this
+  // component's own is needed or would be honoured. There was an
+  // `@media (prefers-reduced-motion)` block here doing exactly that job and it
+  // was provably overridden, so it went rather than staying as decoration.
+  animation: toast-in var(--transition-base) ease-out;
+}
+
+// A leading accent, so the tone is readable from the edge of the stack without
+// reading the glyph. `border-inline-start` rather than a pseudo-element, because
+// the border follows the radius without any correction.
+.toast--success {
+  border-inline-start: var(--border-width-strong) solid var(--color-success);
+}
+
+.toast--error {
+  border-inline-start: var(--border-width-strong) solid var(--color-danger);
+}
+
+.toast--warning {
+  border-inline-start: var(--border-width-strong) solid var(--color-warning);
+}
+
+.toast--info {
+  border-inline-start: var(--border-width-strong) solid var(--color-info);
+}
+
+// The icon sits in a tinted circle, as in the reference: a flat glyph reads as a
+// stray mark, while the disc is visibly part of the notification.
+.toast__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  background-color: var(--toast-tint);
+  color: var(--toast-tone);
+}
+
+.toast--success {
+  --toast-tone: var(--color-success);
+  --toast-tint: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+}
+
+.toast--error {
+  --toast-tone: var(--color-danger);
+  --toast-tint: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+}
+
+.toast--warning {
+  --toast-tone: var(--color-warning);
+  --toast-tint: color-mix(in srgb, var(--color-warning) 16%, var(--color-surface));
+}
+
+.toast--info {
+  --toast-tone: var(--color-info);
+  --toast-tint: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
+}
+
+.toast__text {
+  // `flex: 1` so the close button is pushed to the far edge however short the
+  // title is, and `min-width: 0` so a long unbroken word wraps instead of
+  // widening the toast past its cap.
+  flex: 1;
+  min-width: 0;
+}
+
+.toast__title {
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.toast__message {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+  // A pasted URL or an unbroken id must wrap rather than stretch the stack.
+  overflow-wrap: anywhere;
+}
+
+.toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-height-sm);
+  min-height: var(--control-height-sm);
+  padding: 0;
+  color: var(--color-text-muted);
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: var(--radius-sm);
+}
+
+.toast__close:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+}
+
+.toast__close:focus-visible {
+  outline: var(--border-width-strong) solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--space-4)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Narrow windows
+// ---------------------------------------------------------------------------
+// Flush to the top edge and a little wider, because on a phone the stack is
+// almost the whole usable width already and the side margins only cost characters.
+@media (max-width: 479px) {
+  .toasts {
+    top: var(--space-2);
+    width: calc(100vw - var(--space-4));
+  }
+
+  .toast {
+    padding: var(--space-3);
+  }
+}

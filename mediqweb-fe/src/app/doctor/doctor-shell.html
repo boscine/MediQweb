@@ -1,0 +1,10 @@
+<app-staff-layout
+  [user]="user()"
+  [nav]="nav"
+  [pageTitle]="pageTitle()"
+  [breadcrumbs]="breadcrumbs()"
+  [brandLink]="'/doctor/dashboard'"
+  (logout)="onLogout()"
+>
+  <router-outlet />
+</app-staff-layout>

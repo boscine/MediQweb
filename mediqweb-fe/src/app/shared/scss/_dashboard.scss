@@ -1,0 +1,250 @@
+// ============================================================================
+// Dashboard layout primitives
+// ----------------------------------------------------------------------------
+// Shared by the Admin, Doctor and Secretary dashboards. All three open with a
+// row of stat cards, put a "see all" link in a card header, and lay out a
+// primary agenda beside a narrower column of context cards.
+//
+// `@use` this into a component stylesheet rather than adding it to the global
+// sheet. The rules are re-emitted into that one component's scoped stylesheet,
+// so they stay component-local while having a single source of truth.
+// ============================================================================
+
+// Auto-fitting stat card row. One column on a phone, four on a wide screen.
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+// Quiet link used in a card header and beside a list.
+.see-all {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.see-all:hover {
+  color: var(--color-primary);
+}
+
+// Two columns: the day's list is the point of the page, so it gets the width,
+// and the context cards stack beside it. One column below the layout's sidebar
+// breakpoint, where a side column would leave neither enough room.
+.dash {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.dash__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// The analytics band under a dashboard's main row. Two columns so the charts
+// that compare categories pair up, collapsing to one at the sidebar breakpoint
+// below, where a half-width plot would leave neither the axis labels nor the bar
+// names room to sit.
+.charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+// A chart that needs the whole row — a fortnight of daily labels, a row of hour
+// columns — rather than half of one.
+.charts__wide {
+  grid-column: 1 / -1;
+}
+
+// Both grids collapse together, in one query rather than two, because this
+// partial is re-emitted into every dashboard's scoped stylesheet and each
+// repeated selector is paid for again in each of them.
+@media (max-width: 1023px) {
+  .dash,
+  .charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Day agenda: the time column that a receptionist reads down
+// ---------------------------------------------------------------------------
+
+.agenda {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// `--space-5`, not `--space-4`: the card header pads its own content to
+// `--space-5`, so anything else in the same card reads as a second, sloppier
+// left edge. The rows' dividers still run the full width of the card — only
+// their content is inset.
+.agenda__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.agenda__item:last-child {
+  border-bottom: 0;
+}
+
+// The agenda card turns its own padding off, so the rows can bleed to the card
+// edges and their dividers run unbroken. The empty state has no row to inherit
+// that inset from and no divider of its own, so with nothing to carry it it sat
+// flush against the card border — 20px out of line with the heading sitting
+// directly above it, and flush to the top under the header's divider.
+//
+// Given the same horizontal inset the rows use, and room above and below so the
+// card reads as a deliberate empty state rather than as text that ran out. The
+// same values `ui-table` gives its own empty row, which is the convention for
+// this in a card that has turned its padding off.
+.agenda-card .empty {
+  padding: var(--space-6) var(--space-5);
+}
+
+// Fixed-width so the times line up as a column, which is the whole point of a
+// day list.
+.agenda__time {
+  flex-shrink: 0;
+  width: 5.5rem;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.agenda__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.agenda__patient {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.agenda__patient span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agenda__reason {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agenda__meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------------------
+// Compact "who is next / who is free" list in the side column
+// ---------------------------------------------------------------------------
+
+.overview {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overview__item + .overview__item {
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.overview__item a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  color: var(--color-text-primary);
+}
+
+.overview__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overview__when {
+  flex-shrink: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+// ---------------------------------------------------------------------------
+// Featured record in the side column
+// ---------------------------------------------------------------------------
+
+.next__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-primary);
+}
+
+.next__name span {
+  display: flex;
+  flex-direction: column;
+}
+
+.next__when {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.next__reason {
+  margin: var(--space-3) 0;
+  color: var(--color-text-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// Empty state — see `_empty.scss`, which every screen `@use`s for this one rule
+// rather than pulling a whole dashboard partial in for it.
+// ---------------------------------------------------------------------------
+
+// The agenda row wraps rather than squeezing on a phone.
+@media (max-width: 639px) {
+  .agenda__item {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .agenda__body {
+    flex-basis: 100%;
+    order: 3;
+  }
+
+  .agenda__meta {
+    margin-left: auto;
+  }
+}

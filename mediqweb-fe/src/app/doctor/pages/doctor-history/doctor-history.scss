@@ -1,0 +1,15 @@
+@use '../../../shared/scss/listing';
+
+// Date over time, so the day is scannable down the column and the time is the
+// detail. `tabular-nums` keeps the minutes aligned between rows.
+.when {
+  display: flex;
+  flex-direction: column;
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+}
+
+.when__time {
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,28 @@
+<article
+  [class]="'ui-card ui-card--' + variant() + ' ui-card--padding-' + padding()"
+  [attr.role]="interactive() ? 'button' : null"
+  [attr.tabindex]="interactive() ? 0 : null"
+  (click)="onClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  <header class="ui-card__header">
+    <ng-content select="[uiCardHeader]">
+      @if (heading(); as text) {
+        @if (headingLevel() === 3) {
+          <h3 class="ui-card__title">{{ text }}</h3>
+        } @else {
+          <h4 class="ui-card__title">{{ text }}</h4>
+        }
+      }
+    </ng-content>
+    <ng-content select="[uiCardHeaderActions]" />
+  </header>
+
+  <div class="ui-card__body">
+    <ng-content />
+  </div>
+
+  <footer class="ui-card__footer">
+    <ng-content select="[uiCardFooter]" />
+  </footer>
+</article>

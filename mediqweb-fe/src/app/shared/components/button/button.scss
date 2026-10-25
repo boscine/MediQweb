@@ -1,0 +1,83 @@
+:host {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+:host(.ui-button-host--block) {
+  display: flex;
+  width: 100%;
+}
+
+.ui-button {
+  max-width: 100%;
+}
+
+.ui-button--block {
+  width: 100%;
+}
+
+.ui-button--icon-only {
+  padding-inline: 0;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+// Sizes — only where they differ from the global button baseline.
+.ui-button--sm {
+  min-height: var(--control-height-sm);
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-small);
+}
+
+.ui-button--lg {
+  min-height: var(--control-height-lg);
+  padding-inline: var(--space-5);
+}
+
+// Variants
+.ui-button--primary {
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ui-button--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.ui-button--secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.ui-button--secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-light);
+  border-color: var(--color-border-strong);
+}
+
+.ui-button--ghost {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.ui-button--ghost:hover:not(:disabled) {
+  background-color: var(--color-primary-light);
+}
+
+.ui-button--danger {
+  color: var(--color-text-inverse);
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.ui-button--danger:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-danger) 88%, black);
+  border-color: color-mix(in srgb, var(--color-danger) 88%, black);
+}
+
+:disabled {
+  opacity: 0.55;
+}

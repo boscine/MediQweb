@@ -1,0 +1,50 @@
+<ui-mock-notice area="The Admin area" />
+
+<ui-filter-bar
+  label="Search audit logs"
+  placeholder="Who, what or which record"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="severityItems"
+    [selected]="severity()"
+    label="Filter by severity"
+    (selectionChange)="onSeverityChange($event)"
+  />
+
+  <ui-button [disabled]="true" title="Export is not connected yet">Export CSV</ui-button>
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns"
+    [rows]="entries()"
+    rowKey="id"
+    caption="Audit log entries, newest first"
+    [emptyMessage]="
+      query() || severity() !== 'all'
+        ? 'No entries match your filters.'
+        : 'No activity has been recorded yet.'
+    "
+  >
+    <ng-template uiTableCell="at" let-row>
+      <time [attr.datetime]="row.at">{{ row.at | date: 'MMM d, y · h:mm a' }}</time>
+    </ng-template>
+
+    <ng-template uiTableCell="actor" let-row>
+      <span class="actor">{{ row.actor }}</span>
+    </ng-template>
+
+    <ng-template uiTableCell="severity" let-row>
+      <ui-status-badge [tone]="tone(row.severity)" [dot]="true">
+        {{ label(row.severity) }}
+      </ui-status-badge>
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<p class="row-footnote">
+  {{ totalCount() }} entries recorded. Entries are never edited or removed.
+</p>

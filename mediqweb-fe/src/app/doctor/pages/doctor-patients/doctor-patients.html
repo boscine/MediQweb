@@ -1,0 +1,72 @@
+<ui-mock-notice area="The Doctor area" />
+
+<ui-filter-bar
+  label="Search patients"
+  placeholder="Name, email or contact number"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="statusOptions"
+    [selected]="statusFilter()"
+    label="Filter by account"
+    (selectionChange)="onStatusFilterChange($event)"
+  />
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns"
+    [rows]="rows()"
+    rowKey="id"
+    [caption]="dueBackCount() + ' of ' + totalCount() + ' patients have an appointment booked'"
+    [emptyMessage]="
+      query() || statusFilter() !== 'all'
+        ? 'No patients match your filters.'
+        : 'No patients have booked with you yet.'
+    "
+  >
+    <ng-template uiTableCell="name" let-row>
+      <a class="row-identity" [routerLink]="['/doctor/patients', row.id]">
+        <ui-avatar [name]="row.name" size="xs" />
+        <span class="row-identity__name">{{ row.name }}</span>
+      </a>
+    </ng-template>
+
+    <ng-template uiTableCell="phone" let-row>
+      {{ row.phone }}
+    </ng-template>
+
+    <ng-template uiTableCell="lastVisitAt" let-row>
+      @if (row.lastVisitAt; as at) {
+        <time [attr.datetime]="at">{{ at | date: 'MMM d, y' }}</time>
+      } @else {
+        <span class="never">Never</span>
+      }
+    </ng-template>
+
+    <ng-template uiTableCell="nextVisitAt" let-row>
+      @if (row.nextVisitAt; as at) {
+        <time class="next" [attr.datetime]="at">{{ at | date: 'MMM d · h:mm a' }}</time>
+      } @else {
+        <span class="never">Not booked</span>
+      }
+    </ng-template>
+
+    <ng-template uiTableCell="status" let-row>
+      <ui-status-badge [tone]="statusTone(row.status)" [dot]="true">
+        {{ row.status }}
+      </ui-status-badge>
+    </ng-template>
+
+    <ng-template uiTableCell="actions" let-row>
+      <a class="link-action" [routerLink]="['/doctor/patients', row.id]">View</a>
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<p class="row-footnote">
+  Only patients who have booked an appointment with you appear here. Opening a patient account is
+  the Secretary's job.
+</p>

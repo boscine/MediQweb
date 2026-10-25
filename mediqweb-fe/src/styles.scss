@@ -1,0 +1,255 @@
+// ============================================================================
+// MediQ global stylesheet
+// ----------------------------------------------------------------------------
+// This file contains ONLY global base/element styles and resets. It must never
+// contain component-specific styles — those belong in the component's own
+// `.scss` file, consuming the tokens from `styles/_variables.scss`.
+// ============================================================================
+
+@use 'styles/variables';
+
+// ---------------------------------------------------------------------------
+// Reset
+// ---------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  // 100%, not 16px, and never a percentage of anything else.
+  //
+  // Every `rem` in the app resolves against this. It was `16%` — a `%` typed
+  // where `px` was meant — which silently shrank the root to ~2.56px and
+  // rendered all 21 rem-based rules at a sixth of their intended size: dialogs
+  // 82px wide with clipped labels, dropdowns capped at 56px, grid tracks
+  // collapsing to 35px. The design tokens are all in `px`, which is why nothing
+  // else looked wrong and the bug survived a full test suite and a browser pass.
+  //
+  // `100%` rather than `16px` so a user who raises their browser's default font
+  // size still gets scaling — which is the reason to reach for `rem` at all.
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ---------------------------------------------------------------------------
+// Typography baseline
+// ---------------------------------------------------------------------------
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-page-title);
+  font-weight: var(--font-weight-page-title);
+  letter-spacing: -0.01em;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-weight-section-title);
+}
+
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+
+strong,
+b {
+  font-weight: var(--font-weight-semibold);
+}
+
+small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+}
+
+::selection {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+// ---------------------------------------------------------------------------
+// Form control baseline
+// Buttons and inputs share the 8px radius and the 40px control height so that
+// shared components stay visually aligned from day one.
+// ---------------------------------------------------------------------------
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-md);
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-button);
+  line-height: var(--line-height-button);
+  font-weight: var(--font-weight-button);
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+// `--field-border-color` / `--field-focus-*` are seams: `ui-form-field` sets
+// them on its host and the projected native control inherits them across
+// Angular's style encapsulation, so wrappers can drive input states without
+// ::ng-deep. Unset means "use the MediQ default".
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--control-height-md);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--field-border-color, var(--color-border));
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-light);
+  cursor: not-allowed;
+}
+
+textarea {
+  min-height: calc(var(--control-height-md) * 2);
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--field-focus-border-color, var(--color-primary));
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--field-focus-ring, var(--focus-ring-color));
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility utility
+// Visible to screen readers, removed from the visual layout.
+// ---------------------------------------------------------------------------
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Focus visibility
+// ---------------------------------------------------------------------------
+:focus-visible {
+  outline: var(--border-width-strong) solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// ---------------------------------------------------------------------------
+// Media
+// ---------------------------------------------------------------------------
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// Motion preferences
+// ---------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -1,0 +1,142 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.nav {
+  display: flex;
+  // `flex-grow`, not `min-height: 100%`.
+  //
+  // The host sets `min-height: 100%` but its height property is `auto`, so a
+  // percentage min-height here resolves against an indefinite parent and does
+  // nothing. The nav stayed at its content height, which left the footer's
+  // `margin-top: auto` with no free space to consume -- so Logout sat directly
+  // under the last item, 175px above the bottom of the sidebar.
+  //
+  // Growing rather than stretching means a nav taller than the sidebar still
+  // overflows and scrolls instead of being squashed to fit.
+  flex-grow: 1;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-3);
+}
+
+.nav__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nav__group-label {
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__item--divided {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--control-height-md);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-nav);
+  line-height: var(--line-height-nav);
+  font-weight: var(--font-weight-nav);
+  text-align: left;
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.nav__link:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+}
+
+.nav__link.is-active {
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-light);
+  font-weight: var(--font-weight-semibold);
+}
+
+.nav__link:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.nav__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav__badge {
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-light);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.nav__link.is-active .nav__badge {
+  color: var(--color-primary-dark);
+  background-color: var(--color-surface);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-surface));
+}
+
+.nav__footer {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.nav__link--logout {
+  color: var(--color-danger);
+}
+
+.nav__link--logout:hover:not(:disabled) {
+  color: var(--color-danger);
+  background-color: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+}

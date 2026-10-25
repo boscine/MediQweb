@@ -1,0 +1,106 @@
+<ui-mock-notice area="The Doctor area" />
+
+<div class="stats">
+  <ui-stat-card label="Today" [value]="todayCount()" tone="primary" hint="Appointments remaining">
+    <a statFooter routerLink="/doctor/appointments">See all appointments</a>
+  </ui-stat-card>
+
+  <ui-stat-card
+    label="Awaiting confirmation"
+    [value]="awaitingCount()"
+    tone="warning"
+    hint="Booked, not yet confirmed"
+  >
+    <a statFooter routerLink="/doctor/appointments">Review queue</a>
+  </ui-stat-card>
+
+  <ui-stat-card label="My patients" [value]="patientCount()" tone="info" hint="Seen or booked">
+    <a statFooter routerLink="/doctor/patients">Open patient list</a>
+  </ui-stat-card>
+
+  <ui-stat-card
+    label="Seen this week"
+    [value]="completedThisWeek()"
+    tone="success"
+    hint="Last 7 days"
+  />
+</div>
+
+<div class="dash">
+  <ui-card class="agenda-card" heading="Today's appointments" [headingLevel]="3" padding="none">
+    <ng-container uiCardHeaderActions>
+      <a class="see-all" routerLink="/doctor/appointments">All appointments</a>
+    </ng-container>
+
+    @if (today().length) {
+      <ul class="agenda">
+        @for (appointment of today(); track appointment.id) {
+          <li class="agenda__item">
+            <time class="agenda__time" [attr.datetime]="appointment.startsAt">
+              {{ appointment.startsAt | date: 'h:mm a' }}
+            </time>
+
+            <div class="agenda__body">
+              <a class="agenda__patient" [routerLink]="['/doctor/patients', appointment.patientId]">
+                <ui-avatar [name]="patientName(appointment)" size="xs" />
+                <span>{{ patientName(appointment) }}</span>
+              </a>
+              <span class="agenda__reason">{{ appointment.reason }}</span>
+            </div>
+
+            <span class="agenda__meta">
+              {{ appointment.durationMinutes }} min
+              <ui-appointment-status [status]="appointment.status" />
+            </span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty">Nothing left in today's list.</p>
+    }
+  </ui-card>
+
+  <div class="dash__side">
+    <ui-card heading="Next patient" [headingLevel]="3">
+      @if (next(); as appointment) {
+        <p class="next">
+          <a class="next__name" [routerLink]="['/doctor/patients', appointment.patientId]">
+            <ui-avatar [name]="patientName(appointment)" size="sm" />
+            <span>
+              <strong>{{ patientName(appointment) }}</strong>
+              <span class="next__when">{{
+                appointment.startsAt | date: 'EEEE, MMM d · h:mm a'
+              }}</span>
+            </span>
+          </a>
+        </p>
+        <p class="next__reason">{{ appointment.reason }}</p>
+        <a class="see-all" [routerLink]="['/doctor/patients', appointment.patientId]">
+          Open patient details
+        </a>
+      } @else {
+        <p class="empty">No upcoming appointments.</p>
+      }
+    </ui-card>
+
+    <ui-card heading="Patient overview" [headingLevel]="3">
+      @if (upcomingPatients().length) {
+        <ul class="overview">
+          @for (summary of upcomingPatients(); track summary.patient.id) {
+            <li class="overview__item">
+              <a [routerLink]="['/doctor/patients', summary.patient.id]">
+                <ui-avatar [name]="summary.patient.name" size="xs" />
+                <span class="overview__name">{{ summary.patient.name }}</span>
+                <time class="overview__when" [attr.datetime]="summary.nextVisit!.startsAt">
+                  {{ summary.nextVisit!.startsAt | date: 'MMM d · h:mm a' }}
+                </time>
+              </a>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="empty">No patients are booked in yet.</p>
+      }
+    </ui-card>
+  </div>
+</div>

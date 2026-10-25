@@ -1,0 +1,5 @@
+// All of this page's presentation lives in the shared dashboard partial — it is
+// the same stat row, agenda and side column the Doctor dashboard is built from,
+// and keeping a second copy here is how the two would drift apart.
+@use '../../../shared/scss/dashboard';
+@use '../../../shared/scss/empty';

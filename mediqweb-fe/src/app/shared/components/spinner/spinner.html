@@ -1,0 +1,27 @@
+@if (overlay()) {
+  <div class="ui-spinner-overlay" [attr.role]="announce() ? 'status' : null">
+    <span
+      class="ui-spinner"
+      [style.width]="diameter()"
+      [style.height]="diameter()"
+      [style.borderWidth]="stroke()"
+      aria-hidden="true"
+    ></span>
+    @if (announce()) {
+      <span class="visually-hidden">{{ label() }}</span>
+    }
+  </div>
+} @else {
+  <span
+    class="ui-spinner"
+    [style.width]="diameter()"
+    [style.height]="diameter()"
+    [style.borderWidth]="stroke()"
+  >
+    @if (announce()) {
+      <span class="visually-hidden" role="status">{{ label() }}</span>
+    } @else {
+      <span class="visually-hidden" aria-hidden="true">{{ label() }}</span>
+    }
+  </span>
+}

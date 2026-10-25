@@ -1,0 +1,287 @@
+// Where the sidebar stops being a drawer and becomes permanent.
+// Custom properties are not usable inside media queries, so this is the one
+// number that is written out rather than read from a token.
+$sidebar-breakpoint: 1024px;
+
+// ---------------------------------------------------------------------------
+// Skip link
+// ---------------------------------------------------------------------------
+.shell__skip {
+  position: fixed;
+  z-index: 40;
+  top: var(--space-3);
+  left: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transform: translateY(calc(-100% - var(--space-4)));
+  transition: transform var(--transition-fast);
+}
+
+.shell__skip:focus {
+  transform: translateY(0);
+}
+
+// ---------------------------------------------------------------------------
+// Shell
+// ---------------------------------------------------------------------------
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+.shell__header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: var(--header-height);
+  padding-inline: var(--space-4);
+  background-color: var(--color-surface);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.shell__start,
+.shell__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.shell__menu {
+  width: var(--control-height-md);
+  min-height: var(--control-height-md);
+  padding: 0;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.shell__menu:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+}
+
+.shell__brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.shell__brand:hover {
+  text-decoration: none;
+}
+
+// ---------------------------------------------------------------------------
+// User profile
+// ---------------------------------------------------------------------------
+// The signed-in member, shown as plain text. It used to be a dropdown trigger,
+// which meant this rule also had to carry the button reset; there is no control
+// here now, so it is only the layout.
+.shell__profile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.shell__profile-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: left;
+}
+
+.shell__profile-name,
+.shell__profile-role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell__profile-name {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.shell__profile-role {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// Body
+// ---------------------------------------------------------------------------
+.shell__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.shell__sidebar {
+  display: none;
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  background-color: var(--color-surface);
+  border-right: var(--border-width) solid var(--color-border);
+}
+
+.shell__main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-6) var(--space-4);
+}
+
+// ---------------------------------------------------------------------------
+// Breadcrumb
+// ---------------------------------------------------------------------------
+.shell__crumbs {
+  margin-bottom: var(--space-2);
+}
+
+.shell__crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shell__crumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.shell__crumb + .shell__crumb::before {
+  content: '/';
+  color: var(--color-text-muted);
+}
+
+.shell__crumb [aria-current='page'] {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+// ---------------------------------------------------------------------------
+// Page heading
+// ---------------------------------------------------------------------------
+.shell__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.shell__title {
+  min-width: 0;
+}
+
+// The action slot is optional, so collapse the wrapper when nothing is
+// projected into it.
+.shell__actions:empty {
+  display: none;
+}
+
+.shell__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+// A page may declare no heading, in which case this row has nothing to show but
+// still owns a `margin-bottom` — which would leave a band of dead space above the
+// page.
+//
+// The margin is dropped rather than the row hidden. `:empty` cannot express the
+// condition, because the actions wrapper is always in the DOM even when it
+// collapses, and `:has()` works in a browser but cannot be asserted, since jsdom
+// matches it unreliably. Hiding the row outright would also be wrong: a page may
+// project an action and no title, and this row is what holds that action.
+//
+// With no title and no action the wrapper is `:empty` above and collapses to
+// nothing, so the row is left taking neither height nor margin.
+.shell__title-row--untitled {
+  margin-bottom: 0;
+}
+
+// ---------------------------------------------------------------------------
+// ≥ 1024px — permanent sidebar, no drawer
+// ---------------------------------------------------------------------------
+@media (min-width: $sidebar-breakpoint) {
+  .shell__menu {
+    display: none;
+  }
+
+  .shell__sidebar {
+    display: block;
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100dvh - var(--header-height));
+    overflow-y: auto;
+  }
+
+  .shell__main {
+    padding: var(--space-8);
+  }
+
+  // -------------------------------------------------------------------------
+  // A page that fills the window
+  // -------------------------------------------------------------------------
+  // The shell stops being "at least one viewport" and becomes "exactly one
+  // viewport", and the main column becomes a flex box so the page inside it can
+  // take the height that is left over and scroll its own panels.
+  //
+  // `height` rather than the default `min-height` is the entire point: with
+  // `min-height` a tall page still grows the document and the window scrolls,
+  // which is the one behaviour this is here to remove. `overflow: hidden` on the
+  // main column is what contains the result — it is the box the page lives in, so
+  // it clips rather than pushing the shell's fixed height open. It goes on the main
+  // column and not on `.shell`, because `overflow` on the shell would turn it into
+  // a scroll container and the sticky header and sidebar would then position
+  // against the shell rather than the viewport.
+  :host(.staff-layout-host--fill) .shell {
+    height: 100dvh;
+  }
+
+  :host(.staff-layout-host--fill) .shell__main {
+    display: flex;
+    flex-direction: column;
+    // `min-height: 0` lets the column shrink below its content's height, which is
+    // what lets the page inside it take the leftover space and scroll its own parts.
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Small screens — tighten the header so the brand and profile both fit
+// ---------------------------------------------------------------------------
+@media (max-width: 479px) {
+  .shell__profile-role {
+    display: none;
+  }
+}

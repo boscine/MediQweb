@@ -1,0 +1,37 @@
+@use '../../../shared/scss/listing';
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: var(--space-4);
+}
+
+.card-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.card-description {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.card-meta {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+// The empty state spans the grid instead of occupying one cell.
+.empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  border: var(--border-width) dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+}

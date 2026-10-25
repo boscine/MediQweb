@@ -1,0 +1,221 @@
+:host {
+  display: block;
+}
+
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: var(--space-6) var(--space-4);
+  background-color: var(--color-background);
+}
+
+.login__panel {
+  display: grid;
+  width: 100%;
+  max-width: 960px;
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+// Single column until there is room for the brand panel beside the form.
+@media (min-width: 900px) {
+  .login__panel {
+    grid-template-columns: 1fr 1fr;
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.login__aside {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-10) var(--space-8);
+  background-color: var(--color-primary-light);
+}
+
+@media (min-width: 900px) {
+  .login__aside {
+    display: flex;
+  }
+}
+
+.login__tagline {
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.login__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+}
+
+.login__points li {
+  position: relative;
+  padding-left: var(--space-6);
+}
+
+.login__points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+}
+
+.login__form-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-6);
+}
+
+@media (min-width: 900px) {
+  .login__form-side {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+// The aside is hidden below 900px, so the mark is repeated here to keep the
+// brand visible on small screens.
+.login__brand-mobile {
+  display: block;
+  margin-bottom: var(--space-6);
+}
+
+@media (min-width: 900px) {
+  .login__brand-mobile {
+    display: none;
+  }
+}
+
+.login__title {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-page-title);
+  font-weight: var(--font-weight-page-title);
+  color: var(--color-text-primary);
+}
+
+.login__subtitle {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.login__alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-danger);
+  background-color: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  border: var(--border-width) solid
+    color-mix(in srgb, var(--color-danger) 30%, var(--color-surface));
+  border-radius: var(--radius-md);
+}
+
+.login__alert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  background-color: var(--color-danger);
+  border-radius: var(--radius-full);
+}
+
+.login__input {
+  background-color: var(--color-surface);
+}
+
+// Leaves room for the reveal button without shifting the input box.
+.login__input--padded {
+  padding-inline-end: var(--space-12);
+}
+
+.login__password {
+  position: relative;
+  width: 100%;
+}
+
+.login__reveal {
+  position: absolute;
+  top: 50%;
+  right: var(--space-1);
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.login__reveal:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+}
+
+.login__row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.login__link {
+  min-height: 0;
+  padding: 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.login__link:hover:not(:disabled) {
+  color: var(--color-primary-dark);
+}
+
+.login__note {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+  text-align: center;
+}

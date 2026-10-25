@@ -1,0 +1,125 @@
+// A flex column so the card can be stretched by the grid it sits in.
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+// The surface fills the cell it is given, and carries no padding of its own.
+//
+// Both halves matter. With padding here it pushed the white surface inward,
+// leaving a 20px dead margin around every card while the content inside sat
+// flush against the surface's own border. And without `flex: 1` the surface
+// stayed at content height inside a cell the grid had already stretched, so the
+// card sat in the top of its slot with the gap underneath it.
+.stat {
+  display: flex;
+  flex: 1;
+  padding: 0;
+}
+
+// Owns the stat's padding and vertical rhythm, which is why the content is
+// wrapped rather than projected straight into the card body.
+.stat__inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+}
+
+.stat__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+// Uppercase and letterspaced so a row of labels reads as a set of categories
+// rather than as the start of five sentences. The label is deliberately quiet:
+// the number below it is the content, and a label that competes with it makes
+// the row hard to scan.
+.stat__label {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  color: var(--stat-tone);
+  background-color: color-mix(in srgb, var(--stat-tone) 12%, var(--color-surface));
+  border-radius: var(--radius-md);
+}
+
+// The icon slot is optional, so an omitted icon must leave nothing behind.
+// Without this the chip still painted its 32x32 tone background and the card
+// carried a blank coloured square in the corner, which read as a broken image
+// rather than as an absent one.
+//
+// `:empty` is reliable here rather than a coincidence: the slot is captured by
+// `select="[statIcon]"`, so the only nodes that can ever land inside are elements
+// a consumer explicitly tagged. Whitespace between projected elements is not
+// captured, so an untagged card leaves the chip with no child nodes at all.
+.stat__icon:empty {
+  display: none;
+}
+
+// The metric. Large and heavy enough to be read across a room, and tracked
+// tight so a four-digit number holds together as one shape. `tabular-nums` keeps
+// a column of cards aligned as their values change.
+.stat__value {
+  font-size: var(--font-size-metric);
+  line-height: var(--line-height-metric);
+  font-weight: var(--font-weight-metric);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.stat__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.stat__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.stat__trend--accent {
+  color: var(--stat-tone);
+}
+
+.stat__hint {
+  color: var(--color-text-muted);
+}
+
+// Collapses when no footer is projected, so existing cards are unaffected.
+.stat__footer:empty {
+  display: none;
+}
+
+.stat__footer {
+  padding-top: var(--space-1);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}

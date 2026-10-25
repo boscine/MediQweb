@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+// The figure carries no browser-default margin; the card around it decides the
+// spacing.
+.heatmap {
+  margin: 0;
+}
+
+// Names the measure and the period. Quiet: it qualifies the card's heading
+// rather than competing with it.
+.heatmap__caption {
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+// The grid keeps a usable cell size and does the panning here instead of
+// squeezing its cells below the width of the number inside them.
+.heatmap__scroll {
+  overflow-x: auto;
+}
+
+// `separate` with a spacing, rather than `collapse`: the gaps are what make the
+// cells read as a grid of squares rather than as a ruled table.
+.heatmap__grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 3px;
+}
+
+.heatmap__corner {
+  width: 3.25rem;
+}
+
+.heatmap__slot,
+.heatmap__day {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.heatmap__slot {
+  padding-bottom: var(--space-1);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.heatmap__day {
+  padding-right: var(--space-2);
+  text-align: end;
+}
+
+.heatmap__cell {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-light);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+// The ramp is one hue in three steps, so a darker cell reads as "more of the
+// same" rather than as a different kind of thing.
+.heatmap__cell[data-level='1'] {
+  background-color: var(--color-heat-low);
+  color: var(--color-text-primary);
+}
+
+.heatmap__cell[data-level='2'] {
+  background-color: var(--color-heat-medium);
+  color: var(--color-text-primary);
+}
+
+.heatmap__cell[data-level='3'] {
+  background-color: var(--color-heat-high);
+  color: var(--color-text-inverse);
+}
+
+.heatmap__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.heatmap__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.heatmap__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-light);
+}
+
+.heatmap__swatch[data-level='1'] {
+  background-color: var(--color-heat-low);
+}
+
+.heatmap__swatch[data-level='2'] {
+  background-color: var(--color-heat-medium);
+}
+
+.heatmap__swatch[data-level='3'] {
+  background-color: var(--color-heat-high);
+}
+
+.heatmap__empty {
+  margin: 0;
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+}

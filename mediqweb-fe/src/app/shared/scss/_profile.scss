@@ -1,0 +1,47 @@
+// ============================================================================
+// Profile page layout
+// ============================================================================
+// Shared by the Doctor and Secretary profile pages: both are a read-only summary
+// of the fields an administrator owns beside an editable set the person controls.
+//
+// `@use` this into a component stylesheet rather than adding it to the global
+// sheet. The rules are re-emitted into that one component's scoped stylesheet,
+// so they stay component-local while having a single source of truth.
+// ============================================================================
+
+// Read-only details beside the editable form, stacking below the layout's
+// sidebar breakpoint.
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
+  .profile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lede {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// `.notice` used to live here for the save-time confirmation. It is gone: both
+// profiles report through the app-wide toast stack instead, so the wording, the
+// timing and the dismissal all live in one place rather than being re-declared
+// per profile page.
+
+.form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

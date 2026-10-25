@@ -1,0 +1,52 @@
+:host {
+  display: inline-flex;
+}
+
+.ui-spinner {
+  display: block;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  border-style: solid;
+  border-color: currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  color: inherit;
+  animation: ui-spinner-rotate 700ms linear infinite;
+}
+
+.ui-spinner-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+:host(.ui-spinner--overlay) {
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, var(--color-surface) 75%, transparent);
+}
+
+@keyframes ui-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner {
+    animation: ui-spinner-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+/* Fallback for reduced-motion users: pulse instead of spin. */
+@keyframes ui-spinner-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}

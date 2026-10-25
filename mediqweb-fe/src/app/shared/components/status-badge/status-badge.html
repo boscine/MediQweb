@@ -1,0 +1,11 @@
+<span
+  class="ui-badge"
+  [class.ui-badge--sm]="size() === 'sm'"
+  [attr.role]="ariaLabel() ? 'img' : null"
+  [attr.aria-label]="ariaLabel()"
+>
+  @if (dot()) {
+    <span class="ui-badge__dot" aria-hidden="true"></span>
+  }
+  <ng-content />
+</span>

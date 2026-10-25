@@ -1,0 +1,53 @@
+// ============================================================================
+// Link actions
+// ----------------------------------------------------------------------------
+// `ui-button` always renders a real `<button>`, which cannot carry a
+// `routerLink`. When the destination is another page, an anchor is both the
+// only option and the more correct element, so these rules restate the button
+// variants for that case — the same tokens, the same hover treatment, so a
+// link-button still reads as part of the same family.
+//
+// `@use` this into a component stylesheet rather than adding it to the global
+// sheet. The rules are re-emitted into that one component's scoped stylesheet,
+// so they stay component-local while having a single source of truth.
+// ============================================================================
+
+// Row action, e.g. "View" in a table cell. Matches the ghost button variant.
+.link-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height-sm);
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-button);
+  color: var(--color-primary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.link-action:hover {
+  background-color: var(--color-primary-light);
+}
+
+// Page action, e.g. "Back to patients". Matches the secondary button variant.
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-md);
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-button);
+  line-height: var(--line-height-button);
+  font-weight: var(--font-weight-button);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.link-button:hover {
+  background-color: var(--color-surface-light);
+  border-color: var(--color-border-strong);
+}

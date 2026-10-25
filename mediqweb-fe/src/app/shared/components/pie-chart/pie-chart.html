@@ -1,0 +1,28 @@
+<figure class="pie">
+  @if (caption(); as title) {
+    <figcaption class="pie__caption">{{ title }}</figcaption>
+  }
+
+  @if (visibleSlices().length > 0) {
+    <!--
+      The canvas is hidden from assistive technology on purpose: the legend
+      below states every slice as text, and a screen reader hearing both would
+      read the same numbers twice.
+    -->
+    <div class="pie__plot">
+      <canvas #canvas aria-hidden="true"></canvas>
+    </div>
+
+    <ul class="pie__legend">
+      @for (slice of visibleSlices(); track slice.label) {
+        <li class="pie__item">
+          <span class="pie__dot" [style.--pie-slice-color]="slice.color" aria-hidden="true"></span>
+          <span class="pie__label">{{ slice.label }}</span>
+          <span class="pie__value">{{ slice.value }}</span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="pie__empty">{{ emptyMessage() }}</p>
+  }
+</figure>

@@ -1,0 +1,92 @@
+// A grid column of its own, so it shrinks with the column rather than
+// insisting on the width of its canvas.
+:host {
+  display: block;
+  min-width: 0;
+}
+
+// The figure carries no browser-default margin; the layout above it decides
+// the spacing.
+.pie {
+  margin: 0;
+}
+
+// Names the breakdown. Quiet and centred over the plot: it titles the chart,
+// it is not a heading for the card.
+.pie__caption {
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+// A bounded square, centred in whatever box the card gives it. chart.js
+// measures this box to size the canvas, so the box decides the shape: with a
+// fixed height in a wide column the pie came out as a small circle adrift in a
+// wide empty band. Growing with the column stops at a size a circle stays
+// readable at, and no further.
+.pie__plot {
+  position: relative;
+  width: min(100%, 14rem);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+// Only a ceiling: chart.js sets the canvas inline once it has laid it out, and
+// these caps are what keep the un-drawn fallback — a canvas at its default
+// 300x150 — from overflowing the box.
+.pie__plot canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+// The legend lives in the same block as the plot, so its rows line up with the
+// circle above instead of running out to the card's edges on either side of it.
+.pie__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: min(100%, 14rem);
+  margin: var(--space-3) auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pie__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+// Sized like the activity list's own severity dot, so a dot beside a slice and
+// a dot beside the entry it counts read as the same mark.
+.pie__dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--pie-slice-color);
+}
+
+// The name is the meaning, the number is the measure: the number takes the
+// heavier colour so a column of counts lines up as one readable column.
+.pie__label {
+  color: var(--color-text-secondary);
+}
+
+.pie__value {
+  margin-left: auto;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pie__empty {
+  margin: 0;
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+}

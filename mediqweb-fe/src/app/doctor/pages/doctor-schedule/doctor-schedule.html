@@ -1,0 +1,224 @@
+<ui-mock-notice area="The Doctor area" />
+
+<ui-card heading="Weekly availability" [headingLevel]="3" padding="lg">
+  <ng-container uiCardHeaderActions>
+    <span class="published">
+      Published now: <strong>{{ published() }}</strong>
+    </span>
+  </ng-container>
+
+  <p class="lede">
+    These are the hours a Secretary may book you into. Work a split day by switching on both
+    sessions; a day with neither switched on is closed to booking without touching appointments that
+    are already there.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <ul class="days" formArrayName="days">
+      @for (day of dayNames; track day; let i = $index) {
+        <li
+          class="day"
+          [formGroupName]="i"
+          [class.day--off]="!isDayOpen(i)"
+          [class.day--error]="showOverlapError(i)"
+        >
+          <div class="day__heading">
+            <span class="day__name">{{ day }}</span>
+            <span class="day__summary">{{ daySummary(i) }}</span>
+          </div>
+
+          <div class="day__sessions" formArrayName="sessions">
+            @for (label of sessionLabels; track label; let s = $index) {
+              <div class="session" [formGroupName]="s" [class.session--off]="!isSessionOn(i, s)">
+                <label class="session__toggle">
+                  <input type="checkbox" formControlName="enabled" />
+                  <span>{{ label }}</span>
+                </label>
+
+                <div class="session__hours">
+                  <ui-form-field
+                    label="Opens"
+                    [controlId]="weeklyId(i, s, 'startTime')"
+                    [disabled]="!isSessionOn(i, s)"
+                    [error]="showSessionError(i, s) ? timeError() : null"
+                  >
+                    <input
+                      type="time"
+                      [id]="weeklyId(i, s, 'startTime')"
+                      formControlName="startTime"
+                    />
+                  </ui-form-field>
+
+                  <span class="hours-dash" aria-hidden="true">to</span>
+
+                  <ui-form-field
+                    label="Closes"
+                    [controlId]="weeklyId(i, s, 'endTime')"
+                    [disabled]="!isSessionOn(i, s)"
+                    [error]="showSessionError(i, s) ? timeError() : null"
+                  >
+                    <input type="time" [id]="weeklyId(i, s, 'endTime')" formControlName="endTime" />
+                  </ui-form-field>
+                </div>
+              </div>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+
+    <!--
+  Only the overlap error belongs here. It is a fault of the *day* rather than of
+  either input, so `FormField` has nowhere to put it — but the time errors are
+  already shown on their own fields, and printing "cannot overlap" whenever the
+  form is invalid for any reason is a statement about a problem the form does not
+  have.
+-->
+    @if (hasOverlapError()) {
+      <p class="form-error" role="alert">{{ overlapError() }}</p>
+    }
+
+    <div class="actions">
+      <p class="actions__summary">This week would be {{ draftSummary() }}.</p>
+      <div class="actions__buttons">
+        <ui-button variant="ghost" type="button" (click)="reset()">Reset</ui-button>
+        <ui-button type="submit">Save hours</ui-button>
+      </div>
+    </div>
+  </form>
+</ui-card>
+
+<!--
+  Two peer cards on one page, which is why nothing else in the app stacks them
+  and so nothing used to separate them: they rendered flush, reading as one card
+  with a seam down the middle.
+-->
+<ui-card heading="One-off dates" [headingLevel]="3" padding="lg">
+  <ng-container uiCardHeaderActions>
+    <span class="published">
+      Exceptions: <strong>{{ datedEntries().length }}</strong>
+    </span>
+  </ng-container>
+
+  <p class="lede">
+    For the days the weekly pattern above does not describe — a holiday, an evening clinic, a
+    morning you are not seeing anyone. A date you add here replaces that weekday's hours for that
+    day only; every other date keeps the weekly pattern.
+  </p>
+
+  <form class="dated-form" [formGroup]="dated" (ngSubmit)="saveDated()">
+    <div class="dated-form__grid">
+      <ui-form-field
+        label="Date"
+        [controlId]="'dated-date'"
+        [hint]="baselineHint()"
+        [error]="datedDateError()"
+      >
+        <!--
+  `triggerId` rather than `id`: an input named `id` would also be applied to the
+  host element, giving the page two elements with the same id. See DatePicker.
+-->
+        <ui-date-picker
+          formControlName="date"
+          triggerId="dated-date"
+          label="Date this exception applies to"
+          [today]="today"
+          [min]="today"
+          [marked]="markedDates()"
+          [invalid]="datedDateError() !== null"
+          [describedBy]="weeklyBaseline() ? datedHelpId : null"
+        />
+      </ui-form-field>
+    </div>
+
+    <div class="dated-form__sessions" formArrayName="sessions">
+      @for (label of sessionLabels; track label; let s = $index) {
+        <div
+          class="session session--dated"
+          [formGroupName]="s"
+          [class.session--off]="!isDatedSessionOn(s)"
+        >
+          <label class="session__toggle">
+            <input type="checkbox" formControlName="enabled" />
+            <span>{{ label }}</span>
+          </label>
+
+          <div class="session__hours">
+            <ui-form-field
+              label="Opens"
+              [controlId]="datedId(s, 'startTime')"
+              [disabled]="!isDatedSessionOn(s)"
+              [error]="showDatedSessionError(s) ? timeError() : null"
+            >
+              <input type="time" [id]="datedId(s, 'startTime')" formControlName="startTime" />
+            </ui-form-field>
+
+            <span class="hours-dash" aria-hidden="true">to</span>
+
+            <ui-form-field
+              label="Closes"
+              [controlId]="datedId(s, 'endTime')"
+              [disabled]="!isDatedSessionOn(s)"
+              [error]="showDatedSessionError(s) ? timeError() : null"
+            >
+              <input type="time" [id]="datedId(s, 'endTime')" formControlName="endTime" />
+            </ui-form-field>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (hasDatedOverlapError()) {
+      <p class="form-error" role="alert">{{ overlapError() }}</p>
+    }
+
+    <div class="actions">
+      <p class="actions__summary">
+        @if (isEditingDate()) {
+          Editing {{ formatDate(editingDate()!) }} — saving replaces it.
+        } @else {
+          Adding a date does not change the weekly pattern above.
+        }
+      </p>
+      <div class="actions__buttons">
+        @if (isEditingDate()) {
+          <ui-button variant="ghost" type="button" (click)="resetDated()">Cancel</ui-button>
+        }
+        <ui-button type="submit">{{ datedSubmitLabel() }}</ui-button>
+      </div>
+    </div>
+  </form>
+
+  @if (datedEntries().length) {
+    <ul class="dated-list">
+      @for (entry of datedEntries(); track entry.date) {
+        <li class="dated-list__row">
+          <div class="dated-list__when">
+            <span class="dated-list__date">{{ formatDate(entry.date) }}</span>
+          </div>
+          <span class="dated-list__hours">
+            @if (entry.sessions.length) {
+              {{ describeSessions(entry.sessions) }}
+            } @else {
+              Closed all day
+            }
+          </span>
+          <div class="dated-list__actions">
+            <ui-button variant="ghost" size="sm" (click)="editDated(entry)">Edit</ui-button>
+            <ui-button variant="ghost" size="sm" (click)="clearDated(entry)">Remove</ui-button>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="dated-empty">
+      No one-off dates yet. Your weekly pattern above is the whole of your published availability.
+    </p>
+  }
+</ui-card>
+
+<p class="footnote">
+  Changing your hours does not move the appointments already booked in them — a visit stays where it
+  is until a Secretary moves it. Add a date to close a day you are not working, and a Secretary will
+  see that day as closed when they come to book it.
+</p>

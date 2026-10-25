@@ -1,0 +1,101 @@
+:host {
+  display: flex;
+  min-width: 0;
+}
+
+.ui-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.ui-card--elevated {
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+
+.ui-card--filled {
+  background-color: var(--color-surface-light);
+}
+
+:host(.ui-card-host--interactive) .ui-card {
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+:host(.ui-card-host--interactive) .ui-card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+// Optional regions collapse when nothing is projected.
+.ui-card__header:empty,
+.ui-card__footer:empty {
+  display: none;
+}
+
+.ui-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.ui-card__title {
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-weight-section-title);
+  color: var(--color-text-primary);
+}
+
+.ui-card__footer {
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--color-surface-light);
+  border-top: var(--border-width) solid var(--color-border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.ui-card__body {
+  min-width: 0;
+}
+
+// A filling card hands the leftover height to its body, so what is projected into
+// it can scroll in place.
+//
+// The `flex` column on the body is what makes a single scrollable child work: the
+// child then fills the body and scrolls inside it, where without it the child would
+// size itself to its own content and the body would grow the card instead.
+//
+// `min-height: 0` is load-bearing. A flex item defaults to `min-height: auto`, which
+// refuses to shrink below its content — so the body would keep its content's
+// height, the card would overflow, and nothing would scroll.
+:host(.ui-card-host--fill) .ui-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ui-card--padding-none .ui-card__body {
+  padding: 0;
+}
+
+.ui-card--padding-sm .ui-card__body {
+  padding: var(--space-3);
+}
+
+.ui-card--padding-md .ui-card__body {
+  padding: var(--space-5);
+}
+
+.ui-card--padding-lg .ui-card__body {
+  padding: var(--space-6);
+}

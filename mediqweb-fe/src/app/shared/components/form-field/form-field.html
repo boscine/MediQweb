@@ -1,0 +1,25 @@
+<label class="ui-form-field__label" [attr.for]="controlId()">
+  {{ label() }}
+  @if (required()) {
+    <span class="ui-form-field__required" aria-hidden="true">*</span>
+  }
+</label>
+
+<div class="ui-form-field__control">
+  <ng-content />
+</div>
+
+@if (hasHelp()) {
+  <p
+    [class]="
+      'ui-form-field__help ui-form-field__help--' +
+      (hasError() ? 'error' : isSuccess() ? 'success' : 'hint')
+    "
+    [id]="helpId()"
+  >
+    @if (hasError()) {
+      <span class="ui-form-field__help-icon" aria-hidden="true">!</span>
+    }
+    {{ helpText() }}
+  </p>
+}

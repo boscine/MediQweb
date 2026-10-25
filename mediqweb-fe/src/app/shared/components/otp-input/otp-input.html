@@ -1,0 +1,18 @@
+<input
+  #code
+  class="ui-otp-input__field"
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  maxlength="6"
+  [value]="value()"
+  [disabled]="disabled()"
+  [attr.aria-invalid]="isComplete() ? null : true"
+  aria-describedby="otp-help"
+  autocomplete="one-time-code"
+  autocapitalize="none"
+  spellcheck="false"
+  (input)="onInput($event)"
+  (paste)="onPaste($event)"
+  (blur)="onBlur()"
+/>

@@ -1,0 +1,331 @@
+<ui-mock-notice area="The Admin area" />
+
+<ui-filter-bar
+  [label]="'Search ' + plural()"
+  placeholder="Name, email or license"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="statusOptions"
+    [selected]="statusFilter()"
+    [label]="'Filter by status'"
+    (selectionChange)="onStatusFilterChange($event)"
+  />
+  <!--
+    The create action lives in the bar beside the filter rather than on a row of
+    its own. It belongs to the same toolbar, and a second right-aligned row below
+    the search made the page taller for the sake of one button. Both controls sit
+    at the `md` control height so the bar's bottom alignment holds.
+  -->
+  <ui-button variant="primary" (click)="openCreate()"> Add {{ singular() }} </ui-button>
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns()"
+    [rows]="accounts()"
+    rowKey="id"
+    [caption]="activeCount() + ' of ' + totalCount() + ' ' + plural().toLowerCase() + ' active'"
+    [emptyMessage]="
+      query() || statusFilter() !== 'all'
+        ? 'No ' + plural().toLowerCase() + ' match your filters.'
+        : 'No ' + plural().toLowerCase() + ' yet.'
+    "
+  >
+    <ng-template uiTableCell="name" let-row>
+      <span class="row-identity">
+        <ui-avatar [name]="row.name" size="xs" />
+        <span class="row-identity__name">{{ row.name }}</span>
+      </span>
+    </ng-template>
+
+    <ng-template uiTableCell="status" let-row>
+      <ui-status-badge [tone]="statusTone(row.status)" [dot]="true">
+        {{ row.status }}
+      </ui-status-badge>
+    </ng-template>
+
+    <ng-template uiTableCell="joinedOn" let-row>{{
+      row.joinedOn | date: 'mediumDate'
+    }}</ng-template>
+
+    <ng-template uiTableCell="licenseNumber" let-row>
+      {{ row.licenseNumber ?? 'â€”' }}
+    </ng-template>
+
+    <ng-template uiTableCell="actions" let-row>
+      @if (row.status === 'active') {
+        <ui-button variant="ghost" size="sm" (click)="requestDisable(row)">Disable</ui-button>
+      } @else {
+        <ui-button variant="ghost" size="sm" (click)="enable(row)">Enable</ui-button>
+      }
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<!-- Create account. The real account, including any invitation email, is the
+     API's job; this form only demonstrates the flow. The password controls are
+     collected so the flow can be walked end to end and then discarded — nothing
+     stores them. -->
+<ui-modal
+  [open]="createOpen()"
+  size="lg"
+  [title]="'Add ' + roleLabel()"
+  description="Create a secure staff account. Required fields are marked with an asterisk."
+  (closed)="closeCreate()"
+>
+  <form class="account-form" [formGroup]="form" (ngSubmit)="submit()" id="add-staff-form">
+    <h3 class="form-section">Account information</h3>
+
+    <div class="grid">
+      <ui-form-field
+        #nameField
+        label="Full name"
+        controlId="add-name"
+        [required]="true"
+        [error]="errorFor('name')"
+      >
+        <input
+          id="add-name"
+          type="text"
+          formControlName="name"
+          autocomplete="off"
+          [attr.aria-invalid]="nameField.hasError() ? true : null"
+          [attr.aria-describedby]="nameField.hasError() ? nameField.helpId() : null"
+        />
+      </ui-form-field>
+
+      <ui-form-field
+        #emailField
+        label="Email"
+        controlId="add-email"
+        [required]="true"
+        [error]="errorFor('email')"
+      >
+        <!--
+          The icon lives in a wrapper this page owns rather than in a slot on
+          `ui-form-field`, which is used by every form in the app and has no
+          affix support to add without touching all of them.
+        -->
+        <span class="affix">
+          <svg
+            class="affix__icon"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+            <path d="m22 6-10 7L2 6" />
+          </svg>
+          <input
+            id="add-email"
+            type="email"
+            formControlName="email"
+            autocomplete="off"
+            [attr.aria-invalid]="emailField.hasError() ? true : null"
+            [attr.aria-describedby]="emailField.hasError() ? emailField.helpId() : null"
+          />
+        </span>
+      </ui-form-field>
+
+      <ui-form-field
+        #usernameField
+        label="Username"
+        controlId="add-username"
+        [required]="true"
+        [error]="errorFor('username')"
+      >
+        <input
+          id="add-username"
+          type="text"
+          formControlName="username"
+          autocomplete="off"
+          spellcheck="false"
+          [attr.aria-invalid]="usernameField.hasError() ? true : null"
+          [attr.aria-describedby]="usernameField.hasError() ? usernameField.helpId() : null"
+        />
+      </ui-form-field>
+
+      <ui-form-field
+        #passwordField
+        label="Temporary password"
+        controlId="add-password"
+        [required]="true"
+        hint="At least 8 characters. They can change it after signing in."
+        [error]="errorFor('temporaryPassword')"
+      >
+        <span class="affix">
+          <svg
+            class="affix__icon"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <input
+            id="add-password"
+            type="password"
+            formControlName="temporaryPassword"
+            autocomplete="new-password"
+            [attr.aria-invalid]="passwordField.hasError() ? true : null"
+            [attr.aria-describedby]="passwordField.hasError() ? passwordField.helpId() : null"
+          />
+        </span>
+      </ui-form-field>
+    </div>
+
+    <ui-form-field
+      #confirmField
+      label="Confirm password"
+      controlId="add-confirm-password"
+      [required]="true"
+      [error]="confirmPasswordError()"
+    >
+      <input
+        id="add-confirm-password"
+        type="password"
+        formControlName="confirmPassword"
+        autocomplete="new-password"
+        [attr.aria-invalid]="confirmField.hasError() ? true : null"
+        [attr.aria-describedby]="confirmField.hasError() ? confirmField.helpId() : null"
+      />
+    </ui-form-field>
+
+    <ui-form-field
+      label="Account status"
+      controlId="add-status"
+      hint="New accounts are active by default."
+    >
+      <ui-dropdown
+        id="add-status"
+        [items]="accountStatusItems"
+        [selected]="form.controls.status.value"
+        (selectionChange)="onStatusChange($event)"
+      />
+    </ui-form-field>
+
+    @if (kind() === 'doctor') {
+      <h3 class="form-section">Doctor details</h3>
+
+      <div class="grid">
+        <ui-form-field
+          label="Specialty"
+          controlId="add-specialization"
+          [required]="true"
+          [error]="specializationError()"
+        >
+          <!--
+            `ui-dropdown` is not a form control, so the selection is read back out
+            of the control to keep the trigger text in step with it.
+          -->
+          <ui-dropdown
+            id="add-specialization"
+            [items]="specializationItems()"
+            [selected]="form.controls.specializationId.value"
+            placeholder="Select specialty"
+            (selectionChange)="onSpecializationChange($event)"
+          />
+        </ui-form-field>
+
+        <ui-form-field
+          label="License number"
+          controlId="add-license"
+          [required]="true"
+          hint="As recorded with the PRC."
+          [error]="licenseError()"
+        >
+          <input id="add-license" type="text" formControlName="licenseNumber" autocomplete="off" />
+        </ui-form-field>
+      </div>
+    }
+
+    <!--
+      The mirror of the section above: a doctor has a specialty and a licence, a
+      secretary has a desk. The assignment is what every screen in the Secretary
+      area is scoped by, so it is asked for at creation rather than left blank
+      and patched later — a secretary with no doctor signs in to an empty area.
+    -->
+    @if (kind() === 'secretary') {
+      <h3 class="form-section">Secretary details</h3>
+
+      <ui-form-field
+        label="Assigned doctor"
+        controlId="add-assigned-doctor"
+        [required]="true"
+        [hint]="assignedDoctorHint()"
+        [error]="assignedDoctorError()"
+      >
+        <!-- Same read-back as the specialty field: `ui-dropdown` is not a form
+             control, so the trigger text is kept in step by hand. -->
+        <ui-dropdown
+          id="add-assigned-doctor"
+          [items]="assignedDoctorItems()"
+          [selected]="form.controls.assignedDoctorId.value"
+          placeholder="Select doctor"
+          (selectionChange)="onAssignedDoctorChange($event)"
+        />
+      </ui-form-field>
+    }
+  </form>
+
+  <ng-container modalFooter>
+    <ui-button (click)="closeCreate()">Cancel</ui-button>
+    <ui-button variant="primary" type="submit" formId="add-staff-form" [loading]="saving()">
+      <svg
+        uiButtonIconStart
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+      Create {{ roleLabel() }} Account
+    </ui-button>
+  </ng-container>
+</ui-modal>
+
+<!-- Disabling removes someone's access, so it is confirmed rather than done on
+     a single click. -->
+<ui-modal
+  [open]="!!confirmDisableFor()"
+  size="sm"
+  [title]="'Disable ' + singular() + ' account'"
+  (closed)="cancelDisable()"
+>
+  @if (confirmDisableFor(); as account) {
+    <p class="row-confirm">
+      <strong>{{ account.name }}</strong> will no longer be able to sign in. The account and its
+      records are kept, and it can be enabled again at any time.
+    </p>
+  }
+
+  <ng-container modalFooter>
+    <ui-button (click)="cancelDisable()">Cancel</ui-button>
+    <ui-button variant="danger" (click)="confirmDisable()">Disable account</ui-button>
+  </ng-container>
+</ui-modal>

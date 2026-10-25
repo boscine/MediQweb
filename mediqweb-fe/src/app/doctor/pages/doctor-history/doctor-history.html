@@ -1,0 +1,66 @@
+<ui-mock-notice area="The Doctor area" />
+
+<ui-filter-bar
+  label="Search visit history"
+  placeholder="Patient name or reason"
+  [value]="query()"
+  (queryChange)="query.set($event)"
+>
+  <ui-dropdown
+    class="row-filter"
+    [items]="outcomeOptions"
+    [selected]="outcomeFilter()"
+    label="Filter by outcome"
+    (selectionChange)="onOutcomeChange($event)"
+  />
+</ui-filter-bar>
+
+<ui-card padding="none">
+  <ui-table
+    [columns]="columns"
+    [rows]="rows()"
+    rowKey="id"
+    [caption]="caption()"
+    [emptyMessage]="
+      query() || outcomeFilter() !== 'all'
+        ? 'No visits match your filters.'
+        : 'No visits recorded yet. Recording a visit or a no-show on Appointments puts it here.'
+    "
+  >
+    <ng-template uiTableCell="startsAt" let-row>
+      <span class="when">
+        <time [attr.datetime]="row.startsAt">{{ row.startsAt | date: 'MMM d, y' }}</time>
+        <span class="when__time">{{ row.startsAt | date: 'h:mm a' }}</span>
+      </span>
+    </ng-template>
+
+    <ng-template uiTableCell="patientName" let-row>
+      <a class="row-identity" [routerLink]="['/doctor/patients', row.patientId]">
+        <ui-avatar [name]="row.patientName" size="xs" />
+        <span class="row-identity__name">{{ row.patientName }}</span>
+      </a>
+    </ng-template>
+
+    <ng-template uiTableCell="reason" let-row>
+      {{ row.reason }}
+    </ng-template>
+
+    <ng-template uiTableCell="length" let-row>
+      {{ row.length }}
+    </ng-template>
+
+    <ng-template uiTableCell="outcome" let-row>
+      <ui-appointment-status [status]="row.outcome" />
+    </ng-template>
+
+    <ng-template uiTableCell="actions" let-row>
+      <a class="link-action" [routerLink]="['/doctor/patients', row.patientId]">View</a>
+    </ng-template>
+  </ui-table>
+</ui-card>
+
+<p class="row-footnote">
+  A cancelled appointment is not here: nobody was seen and nobody missed it, so there is no visit to
+  record. Only the two outcomes you decide yourself appear — a visit that happened, and one where
+  the patient did not arrive.
+</p>

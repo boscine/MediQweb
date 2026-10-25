@@ -1,0 +1,80 @@
+<div class="ui-table__wrapper" [class.ui-table__wrapper--scroll]="true">
+  <table
+    class="ui-table"
+    [class.ui-table--striped]="striped()"
+    [class.ui-table--sticky]="stickyHeader()"
+  >
+    @if (caption()) {
+      <caption class="ui-table__caption">
+        {{
+          caption()
+        }}
+        <span class="visually-hidden" aria-live="polite"
+          >{{ rowCount() }} {{ rowCount() === 1 ? 'row' : 'rows' }}</span
+        >
+      </caption>
+    }
+
+    <thead>
+      <tr>
+        @for (column of columns(); track column.key) {
+          <th
+            scope="col"
+            [class]="'ui-table__th ui-table__th--' + (column.align ?? 'start')"
+            [class.is-sortable]="column.sortable"
+            [class.is-sorted]="isSorted(column.key)"
+            [attr.aria-sort]="column.sortable ? ariaSort(column.key) : null"
+            [style.width]="column.width ?? null"
+            [attr.data-hide-below]="column.hideBelow ?? null"
+          >
+            @if (column.sortable) {
+              <button type="button" class="ui-table__sort" (click)="onSort(column)">
+                <span>{{ column.header }}</span>
+                <span class="ui-table__sort-icon" aria-hidden="true">
+                  {{ !isSorted(column.key) ? '↕' : sortDirection() === 'asc' ? '↑' : '↓' }}
+                </span>
+              </button>
+            } @else {
+              {{ column.header }}
+            }
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (loading()) {
+        <tr class="ui-table__state-row">
+          <td [attr.colspan]="columns().length">
+            <ui-spinner size="md" label="Loading rows" [overlay]="true" />
+          </td>
+        </tr>
+      } @else {
+        @for (row of sortedRows(); track trackRow($index, row)) {
+          <tr class="ui-table__row" (click)="rowClick.emit(row)">
+            @for (column of columns(); track column.key) {
+              <td
+                [class]="'ui-table__td ui-table__td--' + (column.align ?? 'start')"
+                [attr.data-hide-below]="column.hideBelow ?? null"
+              >
+                @if (templateFor(column.key); as tpl) {
+                  <ng-container
+                    *ngTemplateOutlet="tpl; context: { row: row, column: column, $implicit: row }"
+                  />
+                } @else {
+                  {{ cellValue(row, column.key) }}
+                }
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr class="ui-table__state-row">
+            <td [attr.colspan]="columns().length" class="ui-table__empty">
+              {{ emptyMessage() }}
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,12 @@
+# MediQ web frontend
+node_modules/
+dist/
+dist/mediqapp-fe/
+.env
+.env.local
+*.log
+npm-debug.log*
+.angular/cache
+.idea/
+.vscode/
+coverage/

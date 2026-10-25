@@ -1,0 +1,24 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+  // Derived from the info token so no colour is hardcoded here.
+  background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-surface));
+  border: var(--border-width) solid color-mix(in srgb, var(--color-info) 24%, var(--color-surface));
+  border-radius: var(--radius-md);
+}
+
+.notice__icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--color-info);
+}
+
+.notice__lead {
+  color: var(--color-text-primary);
+}

@@ -1,0 +1,52 @@
+// Deliberately the quietest thing on the sign-in screen: findable when you are
+// looking for it, ignorable when you are not. Muted text and a hairline border
+// rather than a warning colour, which would pull the eye off the form.
+//
+// The type scale and muted colour are declared once on the block and inherited.
+// The separators and role labels need no rules at all for the same reason, which
+// keeps this well inside the per-component style budget.
+.samples {
+  padding: var(--space-4);
+  background-color: var(--color-surface-light);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+.samples__heading {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.samples__note {
+  margin-top: var(--space-1);
+}
+
+.samples__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.samples__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+// Monospace so the credentials line up as credentials rather than reading as a
+// sentence.
+.samples__id,
+.samples__secret {
+  font-family: var(--font-family-mono);
+  color: var(--color-text-primary);
+}
+
+.samples__role {
+  margin-left: var(--space-1);
+}

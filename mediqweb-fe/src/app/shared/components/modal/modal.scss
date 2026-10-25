@@ -1,0 +1,169 @@
+:host {
+  display: contents;
+}
+
+.ui-modal {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  max-width: none;
+  max-height: none;
+}
+
+.ui-modal--sm {
+  width: min(24rem, calc(100vw - var(--space-8)));
+}
+
+.ui-modal--md {
+  width: min(32rem, calc(100vw - var(--space-8)));
+}
+
+.ui-modal--lg {
+  width: min(48rem, calc(100vw - var(--space-8)));
+}
+
+.ui-modal--xl {
+  width: min(64rem, calc(100vw - var(--space-8)));
+}
+
+.ui-modal::backdrop {
+  background-color: color-mix(in srgb, var(--color-text-primary) 45%, transparent);
+}
+
+// ---------------------------------------------------------------------------
+// Drawer placement
+// Full-height panel pinned to an edge. Used for off-canvas navigation on
+// small viewports, where a centred dialog would be the wrong shape.
+//
+// These rules deliberately follow the `--sm`…`--xl` width rules above and
+// share their specificity, so a drawer always wins on width and `size` has
+// no effect when `placement` names an edge. Do not move them above.
+// ---------------------------------------------------------------------------
+.ui-modal--at-left,
+.ui-modal--at-right {
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  top: 0;
+}
+
+.ui-modal--at-left {
+  width: min(18rem, 84vw);
+  left: 0;
+  right: auto;
+}
+
+.ui-modal--at-right {
+  width: min(18rem, 84vw);
+  left: auto;
+  right: 0;
+}
+
+.ui-modal--at-left .ui-modal__panel,
+.ui-modal--at-right .ui-modal__panel {
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  border-block: 0;
+}
+
+.ui-modal--at-left .ui-modal__panel {
+  border-left: 0;
+}
+
+.ui-modal--at-right .ui-modal__panel {
+  border-right: 0;
+}
+
+// The body owns the scrolling and lays its child out as a full-height column,
+// so drawer content can pin an action to the bottom edge.
+.ui-modal--at-left .ui-modal__body,
+.ui-modal--at-right .ui-modal__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  // Drawer content brings its own padding.
+  padding: 0;
+}
+
+.ui-modal__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - var(--space-12));
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.ui-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+// The title and its description are stacked so the close button can sit opposite
+// the pair rather than drifting to the baseline of a two-line block.
+.ui-modal__heading {
+  min-width: 0;
+}
+
+.ui-modal__title {
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-weight-section-title);
+  color: var(--color-text-primary);
+}
+
+.ui-modal__description {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.ui-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: var(--radius-sm);
+}
+
+.ui-modal__close:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-light);
+  border-color: var(--color-border);
+}
+
+.ui-modal__body {
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+.ui-modal__footer:empty {
+  display: none;
+}
+
+.ui-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background-color: var(--color-surface-light);
+  border-top: var(--border-width) solid var(--color-border);
+}

@@ -1,0 +1,61 @@
+<!--
+  A labelled landmark rather than a live region itself. Each toast carries its
+  own role below, so one assertive error interrupts without every success message
+  being announced the same way.
+-->
+<div class="toasts" role="region" aria-label="Notifications">
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="toast"
+      [class]="'toast toast--' + toast.tone"
+      [attr.role]="role(toast)"
+      (mouseenter)="pause(toast.id)"
+      (mouseleave)="resume(toast.id)"
+      (focusin)="pause(toast.id)"
+      (focusout)="resume(toast.id)"
+    >
+      <span class="toast__icon" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          focusable="false"
+        >
+          <path [attr.d]="iconPath(toast.tone)" />
+        </svg>
+      </span>
+
+      <div class="toast__text">
+        <p class="toast__title">{{ toast.title }}</p>
+        @if (toast.message) {
+          <p class="toast__message">{{ toast.message }}</p>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="toast__close"
+        [attr.aria-label]="'Dismiss: ' + toast.title"
+        (click)="dismiss(toast.id)"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          focusable="false"
+        >
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  }
+</div>

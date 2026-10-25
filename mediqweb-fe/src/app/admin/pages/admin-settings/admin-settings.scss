@@ -1,0 +1,44 @@
+@use '../../../shared/scss/listing';
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.section-hint {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-muted);
+}
+
+// One vertical rhythm for every field in every card.
+//
+// They used to sit flush against one another -- zero gap -- while the hint above
+// them carried 16px, so each label butted straight up against the input above it
+// and read as though it belonged to that field instead of its own. Now the hint
+// and every field are separated by the same 16px.
+.fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+// Two columns only where the fields genuinely pair up. Single-value selects stay
+// full width, because a "30 minutes" dropdown stretched across the card reads
+// worse than one left at a readable length.
+.fields--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 639px) {
+  .fields--pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}

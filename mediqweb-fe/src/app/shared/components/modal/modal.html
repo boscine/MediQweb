@@ -1,0 +1,40 @@
+<dialog
+  #dialog
+  [class]="'ui-modal ui-modal--' + size() + ' ui-modal--at-' + placement()"
+  [attr.aria-label]="title()"
+  [attr.aria-describedby]="description() ? descriptionId : null"
+  (mousedown)="onPointerDown($event)"
+  (click)="onBackdropClick($event)"
+  (cancel)="onCancel($event)"
+>
+  <div class="ui-modal__panel">
+    <header class="ui-modal__header">
+      <div class="ui-modal__heading">
+        <h2 class="ui-modal__title">{{ title() }}</h2>
+        @if (description()) {
+          <p class="ui-modal__description" [id]="descriptionId">{{ description() }}</p>
+        }
+      </div>
+      @if (showClose()) {
+        <button type="button" class="ui-modal__close" aria-label="Close dialog" (click)="close()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      }
+    </header>
+
+    <div class="ui-modal__body">
+      <ng-content />
+    </div>
+
+    <footer class="ui-modal__footer">
+      <ng-content select="[modalFooter]" />
+    </footer>
+  </div>
+</dialog>
